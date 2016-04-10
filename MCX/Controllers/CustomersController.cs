@@ -166,92 +166,105 @@ namespace MCX.Controllers
         }
 
         // GET: Customers
+        //[HttpGet]
+        //public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page, string CustomerType = "L", int DetailForUserID = 0)
+        //{
+
+
+
+        //    var objUsers = (Users)Session["LoggedInUser"];
+        //    var count = 0;
+
+
+        //    string[] ab1 = new string[2];
+
+
+
+        //    IQueryable<Customers> customers = db.Customers
+        //        .Where(x => x.IsDeleted == false && x.IsActive == true)
+
+        //        .Include(c => c.LeadSource)
+        //        .Include(c => c.LeadStatu)
+        //        .Include(c => c.Product)
+        //        .Include(c => c.Stage);
+
+        //    count = customers.Count();
+
+        //    if (CustomerType == "0")
+        //    {
+
+        //    }
+        //    else
+        //    {
+        //        customers = customers.Where(x => x.CustomerType == CustomerType);
+
+        //    }
+
+
+
+        //    if (DetailForUserID == 0)
+        //    {
+
+        //    }
+        //    else if (DetailForUserID > 0)
+        //    {
+        //        customers = db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive == true);
+        //    }
+        //    else if (DetailForUserID == -1)
+        //    {
+        //        customers = db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive == true);
+        //    }
+
+        //    count = customers.Count();
+        //    if (!String.IsNullOrEmpty(searchString))
+        //    {
+        //        customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString)
+        //        || s.Email.Contains(searchString));
+        //    }
+        //    switch (sortOrder)
+        //    {
+        //        case "name_desc":
+        //            customers = customers.OrderByDescending(s => s.FirstName);
+        //            break;
+        //        case "Date":
+        //            customers = customers.OrderBy(s => s.CreatedDate);
+        //            break;
+        //        case "date_desc":
+        //            customers = customers.OrderByDescending(s => s.CreatedDate);
+        //            break;
+        //        default:  // Name ascending 
+        //            customers = customers.OrderBy(s => s.LastName);
+        //            break;
+        //    }
+
+        //    count = customers.Count();
+
+        //    //customers = //db.Users.Join(customers,us => us.LoginId,(customers,us) => new { OwnerName = person.Name, Pet = pet.Name });
+
+
+        //    //    (from u in db.Users
+        //    //     join cu in customers
+        //    //     on u.LoginId equals cu.LeadOwner
+        //    //     select new { cu.IsActive, cu.Address, cu.City, cu.ConvertToPotential, cu.CreatedBy, cu.CreatedDate, cu.CustomerID, cu.CustomerType, cu.Deletedby, cu.Description, cu, u.FirstName, u.LastName }).ToList();
+
+
+
+
+        //    return View(await customers.ToListAsync());
+        //}
+
+
+
+        // GET: Customers
         [HttpGet]
         public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page, string CustomerType = "L", int DetailForUserID = 0)
         {
-
-
-
-            var objUsers = (Users)Session["LoggedInUser"];
-            var count = 0;
-
-
-            string[] ab1 = new string[2];
-
-
-
-            IQueryable<Customers> customers = db.Customers
-                .Where(x => x.IsDeleted == false && x.IsActive == true)
-
-                .Include(c => c.LeadSource)
-                .Include(c => c.LeadStatu)
-                .Include(c => c.Product)
-                .Include(c => c.Stage);
-
-            count = customers.Count();
-
-            if (CustomerType == "0")
-            {
-
-            }
-            else
-            {
-                customers = customers.Where(x => x.CustomerType == CustomerType);
-
-            }
-
-
-
-            if (DetailForUserID == 0)
-            {
-
-            }
-            else if (DetailForUserID > 0)
-            {
-                customers = db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive == true);
-            }
-            else if (DetailForUserID == -1)
-            {
-                customers = db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive == true);
-            }
-
-            count = customers.Count();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString)
-                || s.Email.Contains(searchString));
-            }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    customers = customers.OrderByDescending(s => s.FirstName);
-                    break;
-                case "Date":
-                    customers = customers.OrderBy(s => s.CreatedDate);
-                    break;
-                case "date_desc":
-                    customers = customers.OrderByDescending(s => s.CreatedDate);
-                    break;
-                default:  // Name ascending 
-                    customers = customers.OrderBy(s => s.LastName);
-                    break;
-            }
-
-            count = customers.Count();
-
-            //customers = //db.Users.Join(customers,us => us.LoginId,(customers,us) => new { OwnerName = person.Name, Pet = pet.Name });
-
-
-            //    (from u in db.Users
-            //     join cu in customers
-            //     on u.LoginId equals cu.LeadOwner
-            //     select new { cu.IsActive, cu.Address, cu.City, cu.ConvertToPotential, cu.CreatedBy, cu.CreatedDate, cu.CustomerID, cu.CustomerType, cu.Deletedby, cu.Description, cu, u.FirstName, u.LastName }).ToList();
-
-
-
-
-            return View(await customers.ToListAsync());
+            ViewBag.Title = "Leads Details";
+            return View();
         }
+
+
+
 
         // GET: Customers
         public async Task<ActionResult> IndexMvcGrid()
@@ -701,7 +714,81 @@ namespace MCX.Controllers
         }
 
 
+        public async Task<ActionResult> IndexPartial(string sortOrder, string currentFilter, string searchString, int? page, string CustomerType = "L", int DetailForUserID = 0)
+        {
+            var objUsers = (Users)Session["LoggedInUser"];
+            var count = 0;
+            string[] ab1 = new string[2];
+            IQueryable<Customers> customers = db.Customers
+                .Where(x => x.IsDeleted == false && x.IsActive == true)
 
+                .Include(c => c.LeadSource)
+                .Include(c => c.LeadStatu)
+                .Include(c => c.Product)
+                .Include(c => c.Stage);
+
+            count = customers.Count();
+
+            if (CustomerType == "0")
+            {
+
+            }
+            else
+            {
+                customers = customers.Where(x => x.CustomerType == CustomerType);
+
+            }
+
+            if (DetailForUserID == 0)
+            {
+
+            }
+            else if (DetailForUserID > 0)
+            {
+                customers = db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive == true);
+            }
+            else if (DetailForUserID == -1)
+            {
+                customers = db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive == true);
+            }
+
+            count = customers.Count();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString)
+                || s.Email.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    customers = customers.OrderByDescending(s => s.FirstName);
+                    break;
+                case "Date":
+                    customers = customers.OrderBy(s => s.CreatedDate);
+                    break;
+                case "date_desc":
+                    customers = customers.OrderByDescending(s => s.CreatedDate);
+                    break;
+                default:  // Name ascending 
+                    customers = customers.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            count = customers.Count();
+
+            //customers = //db.Users.Join(customers,us => us.LoginId,(customers,us) => new { OwnerName = person.Name, Pet = pet.Name });
+
+
+            //    (from u in db.Users
+            //     join cu in customers
+            //     on u.LoginId equals cu.LeadOwner
+            //     select new { cu.IsActive, cu.Address, cu.City, cu.ConvertToPotential, cu.CreatedBy, cu.CreatedDate, cu.CustomerID, cu.CustomerType, cu.Deletedby, cu.Description, cu, u.FirstName, u.LastName }).ToList();
+
+
+
+
+            return PartialView("~/Views/Customers/_IndexPartial.cshtml", await customers.ToListAsync());
+        }
         protected override void OnException(ExceptionContext filterContext)
         {
             if (filterContext.ExceptionHandled || !filterContext.HttpContext.IsCustomErrorEnabled)

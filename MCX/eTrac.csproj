@@ -276,6 +276,7 @@
     <Content Include="Views\Potentials\Index.cshtml" />
     <Content Include="Views\Potentials\Details.cshtml" />
     <Content Include="Views\Shared\PartialViewForGrid.cshtml" />
+    <Content Include="Views\Customers\_IndexPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

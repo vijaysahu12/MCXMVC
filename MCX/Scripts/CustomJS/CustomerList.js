@@ -8,6 +8,8 @@
 
 bindUserlistForFilter();
 
+ReBindGrid();
+
 
 $("#gridBody").find('tr').hover(function () {
     $(this).addClass('onFoucsIn');
@@ -31,9 +33,9 @@ $(document).on("click", "#gridBody tr", function (e) {
 $(document).on("click", "#RecordDelete", function () {
 
     var ids = "";
-    debugger;
+  
     $("#gridBody").find(':checkbox').each(function () {
-        debugger;
+       
         if ($(this).prop('checked')) {
 
             ids = ids + $(this).parent('td').parent('tr').attr('id') + ",";
@@ -53,7 +55,7 @@ $(document).on("click", "#RecordDelete", function () {
             dataType: "json",
             contentType: "application/Json",
             success: function (data) {
-                debugger;
+              
 
                 if (data == "1") {
                     alert("Leads has been deleted successfully!!");
@@ -106,7 +108,7 @@ $(document).on("click", "#AssignedTo", function () {
             type: "POST", url: "/Users/UserListForDropdown", data: {}, contentType: "application/Json",
             success: function (data) {
 
-                debugger;
+               
                 //drpUserList
 
                 var items = "";
@@ -135,13 +137,13 @@ $(document).on("click", "#AssignedTo", function () {
 
 $(document).on("click", "#btnproceed", function () {
     var ids = "";
-    debugger;
+  
 
     try {
 
 
         $("#gridBody tr").find('td:first').find(':checkbox').each(function () {
-            debugger;
+           
             if ($(this).prop('checked')) {
                 //alert('check h ');
                 ids = ids + $(this).parent('td').parent('tr').attr('id') + ",";
@@ -154,8 +156,7 @@ $(document).on("click", "#btnproceed", function () {
         }); // each end block
 
         if (ids.length >= 2) {
-            debugger;
-
+            
             $.ajax({
                 //type: "POST", url: "/Customers/AssignedToXEmployees", data: { ids: ids, LoginId: $("#drpUserList :selected").val() }, dataType: "json", contentType: "application/Json", async: true,
                 type: "POST", url: "/Customers/AssignedToXEmployees", data: JSON.stringify({ Ids: ids, LoginId: $("#drpUserList :selected").val() }), dataType: "json", contentType: "application/Json",
@@ -205,11 +206,10 @@ $(document).on("click", "#btnproceed", function () {
 
 
 function ReBindGrid() {
-    debugger;
     //if ($("#searchFromGrid").val().trim().length > 0) {
    // $("#gridBody").html("");
 
-    ajaxCallGet("/Customers/Index", "{searchString:'" + $("#searchFromGrid").val() + "'}");
+    ajaxCallGet("/Customers/IndexPartial", "{searchString:'" + $("#searchFromGrid").val() + "'}");
     //,'sortOrder':'Date','currentFilter':'','page':'1'
     //}
 }
@@ -217,8 +217,15 @@ function ReBindGrid() {
 function ajaxCallGet(url, parameter) {
     //JSON.stringify(parameter)
    // alert('vijay');
-    debugger;
-    $.ajax({ type: "GET", url: url, data: { DetailForUserID: parseInt($("#drpUserListFilter").val()), searchString: $("#searchFromGrid").val(), CustomerType: $("#txtCustomerType :selected").val() }, contentType: "application/Json", success: function () { console.log("Successfully bind fresh data to GRID"); } });
+  
+    $.ajax({
+        type: "GET", url: url, data: { DetailForUserID: parseInt($("#drpUserListFilter").val()), searchString: $("#searchFromGrid").val(), CustomerType: $("#txtCustomerType :selected").val() }, contentType: "application/Json", success: function (data) {
+            debugger;
+            $('#gridBody').empty();
+            $('#gridBody').append(data);
+            console.log("Successfully bind fresh data to GRID");
+        }
+    });
 }
 
 
