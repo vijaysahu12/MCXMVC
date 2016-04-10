@@ -1,0 +1,258 @@
+﻿@model MCX.Models.Tables.Customers
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<link href="~/Content/Custom.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<div class="row">
+    <div class="col-lg-10">
+        <div class="col-lg-10"><h2>Lead Information</h2> </div>
+        @*<h4>(Nurture your leads)</h4>*@
+    </div>
+    <div class="col-lg-2">
+        <div class="row" style='margin-top:30px;'>
+            <div class="col-lg-6">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                    Import Leads
+                </button>
+                @*<a class="btn btn-success" href="/Customers"><span class="" aria-hidden="true"></span></a>*@
+            </div>
+            <div class="col-lg-6"><a class="btn btn-primary" href="/Customers"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span>&nbsp;&nbsp;Back</a></div>
+
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group col-lg-6">
+            <label class="control-label col-md-3">Owner Name</label>
+            <div class="col-md-9">
+                @*@Html.EditorFor(model => model.LeadOwnerName, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.LeadOwnerName, "", new { @class = "text-danger" })*@
+
+
+                @Html.DropDownList("LeadOwner", (IEnumerable<SelectListItem>)ViewBag.LeadOwnerList, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group col-lg-6">
+            <label class="control-label col-md-3">Due Date</label>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.DueDate, new { htmlAttributes = new { @class = "form-control requiredFields" } })
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-3 requiredFields" })
+
+            <div class="col-md-12">
+                <div style="padding-right:0px!important;" class="col-md-2 col-lg-offset-0 col-lg-pull-0">
+                    <select class="dropdown form-control">
+                        <option value="Mr.">Mr.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Ms.">Ms.</option>
+                        <option value="Dr.">Dr.</option>
+                        <option value="Prof.">Prof.</option>
+                    </select>
+                </div>
+                <div class="" style="padding-right: 0px ! important; padding-left:0px; width: 199px;">
+                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control requiredFields" } })
+                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-3 requiredFields" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-3 requiredFields" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.LeadStatusId, "Lead Status", htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.DropDownList("LeadStatusId", null, " -- Select -- ", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LeadStatusId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Mobile, htmlAttributes: new { @class = "control-label col-md-3 requiredFields" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control" } })
+              
+            </div>
+        </div>
+
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Website, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Website, new { htmlAttributes = new { @class = "form-control" } })
+                
+            </div>
+        </div>
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.LeadSourceId, "Lead Source", htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.DropDownList("LeadSourceId", null, " -- Select -- ", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LeadSourceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.ProductId, "Product", htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.DropDownList("ProductId", null, " -- Select -- ", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.StageId, "Stage", htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.DropDownList("StageId", null, " -- Select -- ", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.StageId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.FollowUp, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.FollowUp)
+                    @Html.ValidationMessageFor(model => model.FollowUp, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-3 requiredFields" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+          
+            </div>
+        </div>
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-3 requiredFields" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                
+            </div>
+        </div>
+
+
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Investmentid, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.Investmentid, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Investmentid, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <hr />
+        <div class="form-group col-lg-6">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextAreaFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(mode => mode.ConvertToPotential)
+    <div class="row pull-right">
+        <div class="form-group col-lg-12 pull-right">
+            @*<input type="submit" value="Save" class="btn btn-primary" />*@
+            <input type="submit" value="Save & New" class="btn btn-primary" />
+            <input type="submit" onclick="ConvertLeadToPotential()" value="Save & Convert" class="btn btn-primary" />
+            @*<input type="submit" value="Cancel" class="btn btn-primary" />*@
+            <a class="btn btn-primary" href="/DashBoard">Cancel</a>
+        </div>
+    </div>
+}
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Import Leads</h4>
+            </div>
+            <div class="modal-body">
+                <input type="file" class="form-group" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="~/Scripts/DateTimePicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/Scripts/DateTimePicker/jquery.datetimepicker.js"></script>
+<script>
+    $(document).ready(function () {
+        //$("input[type=number],:text,textarea").addClass("form-control");
+
+        $("#ConvertToPotential").val(0);
+
+
+        $("#DueDate").datetimepicker({
+            timepicker: false,
+            format: 'm/d/Y'
+        });
+
+
+
+    });
+    function ConvertLeadToPotential() {
+        $("#ConvertToPotential").val(1);
+        return true;
+    }
+</script>

@@ -1,0 +1,9 @@
+1	Commodity
+2	Stock Cash
+3	Nifty Future
+4	Stock Future
+5	Options
+6	Agri
+7	Currency
+8	Comex
+9	HNI Commodity

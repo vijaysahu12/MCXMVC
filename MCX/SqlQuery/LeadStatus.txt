@@ -1,0 +1,5 @@
+1	Attempt To Contact
+2	Contact In Future
+3	Contacted
+4	NotContacted
+5	FT Act

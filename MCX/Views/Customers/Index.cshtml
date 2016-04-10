@@ -1,0 +1,171 @@
+﻿@model IEnumerable<MCX.Models.Tables.Customers>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<style>
+.onFoucsIn {
+background-color: #D2E3ED;
+}
+.onFoucsOut {
+background-color: rgb(249,249,249);
+}
+.onTableTrClicked {
+background-color: #0097B6;
+}
+                      </style>
+
+                      @*<h2 class="sub-header">Leads Details</h2>*@
+
+                      <div class="row">
+                          <div class="col-lg-6"> <h2 class="sub-header">Leads Details</h2></div>
+                          <div class="col-lg-6">
+                              
+                              <div class="pull-right"> 
+                                  @using (Html.BeginForm("ImportLeadAndPotential", "Customers", FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
+                                  {
+                                      @*<form action="/Customer/ImportCreditCard?@random.ToString()" method="post" id="divformSubmit" enctype="multipart/form-data">*@
+                                      <div class="row">
+
+                                          <div class="col-sm-12 col-md-offset-3">
+                                             
+                                                  <div class="col-lg-6" id="divFileType" style="display:block;">
+                                                      <input type="file" class="form-control" name="anyFileType" id="anyFileType" />
+                                                  </div>
+                                              <div class="col-lg-2">
+                                                  <input type="submit" class="btn btn-success" value="Import Leads" />
+                                              </div>
+                                                  @*<div id="DivResultResponse">
+
+                                                  </div>*@
+                                              
+                                          </div>
+
+                                      </div>
+                                  }
+</div>
+                               
+                          </div>
+                      </div>
+                      @*List :-@Model.Count();*@
+
+                      <table class="table table-responsive">
+                          <tr>
+                              <td colspan="12">
+                                  <div class="row">
+                                      <div class="col-lg-3">
+                                          <a class="btn btn-default btn-sm" id="RecordAdd" title="Add new Customer Details" href="/Customers/Create/"><span aria-hidden="true" class="glyphicon glyphicon-plus"></span></a>
+                                          <a class="btn btn-default btn-sm" id="RecordEdit" title="Edit Customer Details" href="#"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                                          <a class="btn btn-default btn-sm" id="RecordDetail" title="View Customer Details" href="#"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                                          <a class="btn btn-default btn-sm" id="RecordDelete" title="Delete Customer Details" href="#"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+
+                                          @{
+                                              var abb = (MCX.Models.Tables.Users)@Session["LoggedInUser"];
+                                          }
+
+                                          @if (abb.UserType == "M")
+                                          {
+                                              <a class="btn btn-default btn-sm" id="AssignedTo" title="Assigned to X Employees" href="#"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span></a>
+                                          }
+                                      </div>
+                                      <div class="col-lg-2">
+                                          <select class="form-control form-inline" id="txtCustomerType">
+                                              <option value='0'>--All--</option>
+                                              <option value='L' selected="selected">Lead</option>
+                                              <option value='P'>Potential</option>
+                                          </select>
+                                      </div>
+                                      <div class="col-lg-2">
+                                          <select class="form-control form-inline" id="drpUserListFilter"></select>
+                                      </div>
+                                      <div class="col-lg-3">
+                                          <input type="text" id="searchFromGrid" onkeyup="javascript: ReBindGrid();" placeholder="search through name or mobile number" class="form-control form-inline" />
+                                      </div>
+                                      <div class="col-lg-2 pull-right"><button id="btnSearch">Search</button></div>
+
+                                  </div>
+                              </td>
+
+                          </tr>
+
+
+
+                          <tr>
+                              <th></th>
+                              <th>Name</th>
+                              <th>LeadO</th>
+                              <th>Mobile</th>
+                              <th>Email</th>
+                              <th>Product</th>
+                              @*<th>Lead Source</th>*@
+
+
+                              <th>Lead Status</th>
+                              <th>City</th>
+                              <th>Description</th>
+
+                              <th>Follow Up</th>
+                              <th>Investment</th>
+                          </tr>
+
+                          <tbody id="gridBody">
+                               
+                              @Html.Partial("PartialViewForGrid")
+                          </tbody>
+                      </table>
+
+                      <button class="md-trigger fade" id="btnPopUp" data-modal="modal-11">Super Scaled</button>
+                      <div class="md-modal md-effect-11" id="modal-11">
+                          <div class="md-content">
+                              <div>
+                                  <div class="col-lg-6"><h4>Assigned Leads to employee</h4></div>
+                                  <div class="col-lg-6"><button class="md-close  pull-right">X</button></div>
+                              </div>
+                              <div>
+                                  @*<p>This is a modal window. You can do the following things with it:</p>*@
+
+                                  <p>@*Assigned Leads to employees from the below list*@</p>
+
+
+                                  <div class="col-lg-6">
+                                      <select class="form-control" id="drpUserList"><option value="-1">--Select Employee--</option></select>
+                                  </div>
+
+                                  <div class="col-lg-6"><button id="btnproceed" class="md-effect-1  pull-right">Proceed</button></div>
+
+
+
+
+                                  @*<ul>
+
+                     <li></li>
+
+                    <li>  <strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+                         <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+                         <li><strong>Close:</strong> click on the button below to close the modal.</li>
+                            </ul>*@
+                                  @*<button class="md-close">Close me!</button>*@
+
+
+                              </div>
+
+                              <div>
+                                  <div class="col-lg-6"><h4> </h4></div>
+                                  <div class="col-lg-6">  </div>
+                              </div>
+                          </div>
+                      </div>
+
+<link href="~/Scripts/ModalWindowEffects/css/component.css" rel="stylesheet" />
+<link href="~/Scripts/ModalWindowEffects/css/default.css" rel="stylesheet" />
+<script src="~/Scripts/CustomJS/CustomerList.js"></script>
+<script src="~/Scripts/ModalWindowEffects/js/classie.js"></script>
+<script src="~/Scripts/ModalWindowEffects/js/css-filters-polyfill.js"></script>
+<script src="~/Scripts/ModalWindowEffects/js/cssParser.js"></script>
+<script src="~/Scripts/ModalWindowEffects/js/modalEffects.js"></script>
+
+
