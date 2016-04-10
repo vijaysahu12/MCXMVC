@@ -80,30 +80,79 @@ namespace MCX.Controllers
                                             if (list != null)
                                             {
                                                 var LoggedInUser = (Users)Session["LoggedInUser"];
-                                                list.ForEach((Customers) =>
-                                                {
-
-                                                    Customers.CreatedBy = LoggedInUser.LoginId;
-                                                    Customers.CreatedDate = DateTime.Now;
-                                                    Customers.CustomerType = "L";
-                                                    Customers.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
-                                                    Customers.FollowUp = false;
-                                                    Customers.Investmentid = 0;
-                                                    Customers.LeadOwner = LoggedInUser.LoginId;
-                                                    Customers.LeadSourceId = 2;
-                                                    Customers.LeadStatusId = 4;
-                                                    Customers.ProductId = 1;
-                                                    Customers.StageId = 1;
-
-                                                    db.Customers.Add(Customers);
-                                                    db.SaveChanges();
-                                                });
-
-                                                //foreach (var a in list)
+                                                //list.ForEach((Customers) =>
                                                 //{
-                                                //    db.Customers.Add(a);
-                                                //}
-                                                //db.SaveChanges();
+
+                                                //    Customers.CreatedBy = LoggedInUser.LoginId;
+                                                //    Customers.CreatedDate = DateTime.Now;
+                                                //    Customers.CustomerType = "L";
+                                                //    Customers.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
+                                                //    Customers.FollowUp = false;
+                                                //    Customers.Investmentid = 0;
+                                                //    Customers.LeadOwner = LoggedInUser.LoginId;
+                                                //    Customers.LeadSourceId = 2;
+                                                //    Customers.LeadStatusId = 4;
+                                                //    Customers.ProductId = 1;
+                                                //    Customers.StageId = 1;
+
+                                                //    db.Customers.Add(Customers);
+                                                //    db.SaveChanges();
+                                                //});
+
+                                                foreach (var a in list)
+                                                {
+                                                    a.CreatedBy = LoggedInUser.LoginId;
+                                                    a.CreatedDate = DateTime.Now;
+
+
+                                                    if (a.FirstName == null)
+                                                    {
+                                                        a.FirstName = "";
+                                                    }
+                                                    if (string.IsNullOrWhiteSpace(a.LastName))
+                                                    {
+                                                        a.LastName = "";
+                                                    }
+                                                    a.DueDate = DateTime.Now.ToShortDateString();
+
+                                                    if (a.CustomerType == null)
+                                                    {
+                                                        a.CustomerType = "L";
+                                                    }
+
+
+                                                    if (string.IsNullOrWhiteSpace(a.Email))
+                                                    {
+                                                        a.Email = "..";
+                                                    }
+
+
+                                                    if (string.IsNullOrWhiteSpace(a.Mobile))
+                                                    {
+                                                        a.Email = "91 ";
+                                                    }
+
+
+
+                                                    a.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
+                                                    a.FollowUp = false;
+
+                                                    if (a.Investmentid == null)
+                                                    {
+                                                        a.Investmentid = 0;
+                                                    }
+
+                                                    a.IsActive = true;
+                                                    a.LeadOwner = LoggedInUser.LoginId;
+                                                    a.LeadSourceId = 2;
+                                                    a.LeadStatusId = 4;
+                                                    a.ProductId = 1;
+                                                    a.StageId = 1;
+
+                                                    db.Customers.Add(a);
+                                                    db.SaveChanges();
+                                                }
+
                                             }
                                         }
                                         catch (Exception)
@@ -130,7 +179,7 @@ namespace MCX.Controllers
 
             }
 
-            return View("Index");
+            return RedirectToAction("IndexPartial");
         }
 
         [NonAction]
@@ -468,7 +517,7 @@ namespace MCX.Controllers
                     var LoggedInUser = (Users)Session["LoggedInUser"];
 
 
-                    customers.ModifiedDate = DateTime.UtcNow;
+                    customers.ModifiedDate = DateTime.Now;
                     customers.ModifiedBy = LoggedInUser.LoginId;
 
                     if (customers.ConvertToPotential == 1)
@@ -477,7 +526,7 @@ namespace MCX.Controllers
                     }
 
                     db.Entry(customers).State = EntityState.Modified;
-                    await db.SaveChangesAsync();
+                    db.SaveChangesAsync();
 
 
                     if (!string.IsNullOrWhiteSpace(customers.NewDescription))
@@ -491,11 +540,7 @@ namespace MCX.Controllers
                         }
 
                     }
-
-
-
-
-                    return RedirectToAction("Index");
+                    //return RedirectToAction("Index");
                 }
                 ViewBag.LeadSourceId = new SelectList(db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
                 ViewBag.LeadStatusId = new SelectList(db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
@@ -504,10 +549,10 @@ namespace MCX.Controllers
                 ViewBag.LeadOwnerList = new SelectList(db.Users, "LoginId", "Username");
                 return View(customers);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                return RedirectToAction("Index", "Accounts");
+                throw new Exception("Exception throws while updating records!!!");
+                //return RedirectToAction("IndexPartial");
             }
         }
 

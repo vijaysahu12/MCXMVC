@@ -41,6 +41,8 @@ namespace MCX.HelperClass.Class
                                     if (col.ColumnName.Trim().ToString() == propertyInfo.Name.ToString())
                                     {
                                         propertyInfo.SetValue(obj, Convert.ChangeType(row[prop.Name], propertyInfo.PropertyType), null);
+
+                                        
                                         break;
                                     }
                                     colCount++;

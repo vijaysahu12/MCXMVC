@@ -1,3 +1,9 @@
 1	ColdCall
 2	WebLeads
 3	Friend Referal
+
+
+
+insert into LeadSources values ('ColdCall')
+insert into LeadSources values ('WebLeads')
+insert into LeadSources values ('Friend Referal')

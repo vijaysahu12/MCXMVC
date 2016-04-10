@@ -3,3 +3,10 @@
 3	Contacted
 4	NotContacted
 5	FT Act
+
+
+
+insert into LeadStatus values('Attempt To Contact')
+insert into LeadStatus values('Contact In Future')
+insert into LeadStatus values('Contacted')
+insert into LeadStatus values('NotContacted')

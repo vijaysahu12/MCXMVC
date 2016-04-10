@@ -1,0 +1,11 @@
+﻿1	FT Act
+2	FT Expire
+3	Close WON
+4	Pending
+
+
+
+insert into Stages values ('FT Act')
+insert into Stages values ('FT Expire')
+insert into Stages values ('Close WON')
+insert into Stages values ('Pending')

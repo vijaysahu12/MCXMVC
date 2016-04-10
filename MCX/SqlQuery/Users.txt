@@ -1,0 +1,12 @@
+﻿
+insert into Users (Username,Password,EmailID,mobile,address,UserType,IsActive,IsDelete,CreatedDate,ModifiedDate,FirstName,LastName)
+values ('vijay.sahu12','1234','vijay.sahu12@gmail.com','8237500524','Haridwar','M',1,0,getdate(),getdate(),'vijay','sahu')
+
+
+insert into Users (Username,Password,EmailID,mobile,address,UserType,IsActive,IsDelete,CreatedDate,ModifiedDate,FirstName,LastName)
+values ('wahed','1234','wahed@yopmail.com','8237509024','Haridwar','E',1,0,getdate(),getdate(),'Wahed','B')
+
+
+
+insert into Users (Username,Password,EmailID,mobile,address,UserType,IsActive,IsDelete,CreatedDate,ModifiedDate,FirstName,LastName)
+values ('abc','1234','abc@yopmail.com','8232309024','Haridwar','E',1,0,getdate(),getdate(),'abc','sahu')

@@ -7,3 +7,15 @@
 7	Currency
 8	Comex
 9	HNI Commodity
+
+
+
+insert into Products values ('Commodity')
+insert into Products values ('Stock Cash')
+insert into Products values ('Nifty Future')
+insert into Products values ('Stock Future')
+insert into Products values ('Options')
+insert into Products values ('Agri')
+insert into Products values ('Currency')
+insert into Products values ('Comex')
+insert into Products values ('HNI Commodity')

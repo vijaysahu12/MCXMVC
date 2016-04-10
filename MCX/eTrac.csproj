@@ -133,23 +133,13 @@
     <Compile Include="HelperClass\Interface\IExcelHelper.cs" />
     <Compile Include="HelperClass\Interface\IValidateEngine.cs" />
     <Compile Include="HelperClass\InterOpExcelRead.cs" />
-    <Compile Include="Migrations\201512281634282_Description.cs" />
-    <Compile Include="Migrations\201512281634282_Description.Designer.cs">
-      <DependentUpon>201512281634282_Description.cs</DependentUpon>
+    <Compile Include="Migrations\201604100815552_IntialDatabaseSetupLive.cs" />
+    <Compile Include="Migrations\201604100815552_IntialDatabaseSetupLive.Designer.cs">
+      <DependentUpon>201604100815552_IntialDatabaseSetupLive.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201603140407491_Users_AddTwoColumn.cs" />
-    <Compile Include="Migrations\201603140407491_Users_AddTwoColumn.Designer.cs">
-      <DependentUpon>201603140407491_Users_AddTwoColumn.cs</DependentUpon>
+    <Compile Include="Migrations\Configuration.cs">
+      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Migrations\201603241353404_CustumerType_Customer.cs" />
-    <Compile Include="Migrations\201603241353404_CustumerType_Customer.Designer.cs">
-      <DependentUpon>201603241353404_CustumerType_Customer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201603241613229_customer_tables_ValidationUpdate.cs" />
-    <Compile Include="Migrations\201603241613229_customer_tables_ValidationUpdate.Designer.cs">
-      <DependentUpon>201603241613229_customer_tables_ValidationUpdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\CModels\CMemberShip.cs" />
     <Compile Include="Models\CustomModel\PaymentDetailsModel.cs" />
     <Compile Include="Models\CustomModel\UsersModel.cs" />
@@ -212,6 +202,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Properties\PublishProfiles\tt.pubxml" />
     <None Include="Properties\PublishProfiles\vv.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -235,6 +226,8 @@
     <Content Include="SqlQuery\LeadSource.txt" />
     <Content Include="SqlQuery\LeadStatus.txt" />
     <Content Include="SqlQuery\Product.txt" />
+    <Content Include="SqlQuery\Stages.txt" />
+    <Content Include="SqlQuery\Users.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -294,22 +287,13 @@
     <Content Include="Scripts\ModalWindowEffects\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201512281634282_Description.resx">
-      <DependentUpon>201512281634282_Description.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603140407491_Users_AddTwoColumn.resx">
-      <DependentUpon>201603140407491_Users_AddTwoColumn.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603241353404_CustumerType_Customer.resx">
-      <DependentUpon>201603241353404_CustumerType_Customer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201603241613229_customer_tables_ValidationUpdate.resx">
-      <DependentUpon>201603241613229_customer_tables_ValidationUpdate.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Helper\" />
     <Folder Include="saveFile\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201604100815552_IntialDatabaseSetupLive.resx">
+      <DependentUpon>201604100815552_IntialDatabaseSetupLive.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

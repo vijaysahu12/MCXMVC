@@ -34,7 +34,7 @@ namespace MCX.Models.Tables
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [Required]
+        //[Required]
         [NotMapped]
         [Display(Name = "Due Date")]
         public string DueDate { get; set; }
@@ -64,6 +64,7 @@ namespace MCX.Models.Tables
         [Required]
         [Display(Name = "Product ")]
         public Nullable<int> ProductId { get; set; }
+
         public Nullable<int> LeadStatusId { get; set; }
         public Nullable<int> LeadSourceId { get; set; }
         public Nullable<int> StageId { get; set; }

@@ -46,6 +46,7 @@
                 <label class="control-label col-md-3">Due Date</label>
                 <div class="col-md-9">
                     @Html.EditorFor(model => model.DueDate, new { htmlAttributes = new { @class = "form-control requiredFields" } })
+                    @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "text-danger" })
                 </div>
             </div>
 
@@ -208,6 +209,11 @@
 
                     @Html.TextAreaFor(model => model.NewDescription, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.NewDescription, "", new { @class = "text-danger" })
+                </div>
+
+
+                <div>
+                    @Html.HiddenFor(model => model.CreatedDate)
                 </div>
                 @*<div class="col-md-3"><button id="addDescription" class=" btn btn-primary glyphicon glyphicon-plus">Add Description</button></div>*@
             </div>
