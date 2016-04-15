@@ -1,18 +1,13 @@
-﻿/// <reference path="../jquery-1.10.2.intellisense.js" />
-/// <reference path="../jquery-1.10.2.min.js" />
-//$(document).ready(function () {
+﻿$("document").ready(function () {
+    $("#loader").css('display', 'block');
 
 
-
-//}); 
-
-bindUserlistForFilter();
-
-ReBindGrid();
-
-
+    bindUserlistForFilter();
+    ReBindGrid();
+});
 $("#gridBody").find('tr').hover(function () {
     $(this).addClass('onFoucsIn');
+
 }, function () {
     $(this).removeClass('onFoucsIn');
 });
@@ -27,15 +22,15 @@ $(document).on("click", "#gridBody tr", function (e) {
     $('#RecordEdit').attr('href', "/Customers/Edit/" + (this.id));
     $('#RecordDetail').attr('href', "/Customers/Details/" + (this.id));
     //$('#RecordDelete').attr('href', "/Customers/Delete/" + (this.id));
-     
+
 });
 
 $(document).on("click", "#RecordDelete", function () {
 
     var ids = "";
-  
+
     $("#gridBody").find(':checkbox').each(function () {
-       
+
         if ($(this).prop('checked')) {
 
             ids = ids + $(this).parent('td').parent('tr').attr('id') + ",";
@@ -55,7 +50,7 @@ $(document).on("click", "#RecordDelete", function () {
             dataType: "json",
             contentType: "application/Json",
             success: function (data) {
-              
+
 
                 if (data == "1") {
                     alert("Leads has been deleted successfully!!");
@@ -108,7 +103,7 @@ $(document).on("click", "#AssignedTo", function () {
             type: "POST", url: "/Users/UserListForDropdown", data: {}, contentType: "application/Json",
             success: function (data) {
 
-               
+
                 //drpUserList
 
                 var items = "";
@@ -137,13 +132,13 @@ $(document).on("click", "#AssignedTo", function () {
 
 $(document).on("click", "#btnproceed", function () {
     var ids = "";
-  
+
 
     try {
 
 
         $("#gridBody tr").find('td:first').find(':checkbox').each(function () {
-           
+
             if ($(this).prop('checked')) {
                 //alert('check h ');
                 ids = ids + $(this).parent('td').parent('tr').attr('id') + ",";
@@ -156,7 +151,7 @@ $(document).on("click", "#btnproceed", function () {
         }); // each end block
 
         if (ids.length >= 2) {
-            
+
             $.ajax({
                 //type: "POST", url: "/Customers/AssignedToXEmployees", data: { ids: ids, LoginId: $("#drpUserList :selected").val() }, dataType: "json", contentType: "application/Json", async: true,
                 type: "POST", url: "/Customers/AssignedToXEmployees", data: JSON.stringify({ Ids: ids, LoginId: $("#drpUserList :selected").val() }), dataType: "json", contentType: "application/Json",
@@ -182,45 +177,20 @@ $(document).on("click", "#btnproceed", function () {
     }
 });
 
-
-
-
-
-
-
-//function ReBindGrid() {
-//    debugger;
-//    if ($("#searchFromGrid").val().trim().length > 0) {
-//        //$("#gridBody").html("");
-//        ajaxCallGet("/Customers/Index", "{'searchString':'" + $("#searchFromGrid").val() + "', }");
-//        //,'sortOrder':'Date','currentFilter':'','page':'1'
-//    }
-//}
-
-//function ajaxCallGet(url, parameter) {
-//    //JSON.stringify(parameter)
-//    $.ajax({ type: "GET", url: url, data: { searchString: $("#searchFromGrid").val() }, contentType: "application/Json", success: function () { console.log("Successfully bind fresh data to GRID"); } });
-//}
-
-
+$(document).on('change', '#drpUserListFilter', function () { ReBindGrid(); });
 
 
 function ReBindGrid() {
-    //if ($("#searchFromGrid").val().trim().length > 0) {
-   // $("#gridBody").html("");
+    $("#loader").css('display', 'block');
 
     ajaxCallGet("/Customers/IndexPartial", "{searchString:'" + $("#searchFromGrid").val() + "'}");
-    //,'sortOrder':'Date','currentFilter':'','page':'1'
-    //}
+
+    $("#loader").css('display', 'none');
 }
 
 function ajaxCallGet(url, parameter) {
-    //JSON.stringify(parameter)
-   // alert('vijay');
-  
     $.ajax({
         type: "GET", url: url, data: { DetailForUserID: parseInt($("#drpUserListFilter").val()), searchString: $("#searchFromGrid").val(), CustomerType: $("#txtCustomerType :selected").val() }, contentType: "application/Json", success: function (data) {
-            debugger;
             $('#gridBody').empty();
             $('#gridBody').append(data);
             console.log("Successfully bind fresh data to GRID");
@@ -231,30 +201,20 @@ function ajaxCallGet(url, parameter) {
 
 
 function bindUserlistForFilter() {
-
+    $("#loader").css('display', 'block');
     $.ajax({
-        type: "POST", url: "/Users/UserListForDropdown", data: {}, contentType: "application/Json",
+        type: "POST", url: "/Users/UserListForDropdownForCustomerGrid", data: {}, contentType: "application/Json",
         success: function (data) {
-
-            debugger;
-            //drpUserList
-
             var items = "";
-
             $.each(data, function (index, item) {
                 items += "<option value=" + item.LoginId + ">" + item.Username + "</option>";
             });
-
-
-            //for (var i = 0; i < data.length; i++) {
-
-            //    htmlContent += "<option value='" + data[i].LoginId + "'> " + data[i].Username + " </option>";
-            //}
             $("#drpUserListFilter").empty();
-            $("#drpUserListFilter").append("<option value='0'>--All Employees--</option>");
+            $("#drpUserListFilter").append("<option value='0'>Bind all Customers</option>");
             $("#drpUserListFilter").append("<option value='-1' selected='selected'>Mine</option>");
             $("#drpUserListFilter").append(items);
             console.log("Successfully bind fresh data to GRID");
-        }
+        },
+        complete: function () { $("#loader").css('display', 'none'); }
     });
 }

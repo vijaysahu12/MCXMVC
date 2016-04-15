@@ -20,17 +20,17 @@ namespace MCX.HelperClass.Class
         {
             try
             {
-                List<T> list = new List<T>();
+                var list = new List<T>();
 
                 foreach (var row in table.AsEnumerable())
                 {
-                    T obj = new T();
+                    var obj = new T();
 
                     foreach (var prop in obj.GetType().GetProperties())
                     {
                         try
                         {
-                            PropertyInfo propertyInfo = obj.GetType().GetProperty(prop.Name);
+                            var propertyInfo = obj.GetType().GetProperty(prop.Name);
 
 
                             var colCount = 0;

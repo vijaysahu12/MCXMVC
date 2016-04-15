@@ -1,6 +1,5 @@
 ﻿using MCX.Models.DbEntities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -8,14 +7,13 @@ using System.Web.Mvc;
 using System.Data;
 using System.Data.Entity;
 using System.Net;
-using MCX.Models.Tables;
 namespace MCX.Controllers
 {
     public class PotentialsController : Controller
     {
         //
         // GET: /Potentials/
-        private DbEntities db = new DbEntities();
+        private readonly DbEntities db = new DbEntities();
         public async Task<ActionResult> Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
             var count = 0;
@@ -57,16 +55,16 @@ namespace MCX.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            MCX.Models.CustomModel.PaymentDetailsModel PDObject = new Models.CustomModel.PaymentDetailsModel();
-            PDObject.customers = await db.Customers.FindAsync(id);
+            var pdObject = new Models.CustomModel.PaymentDetailsModel();
+            pdObject.customers = await db.Customers.FindAsync(id);
 
-            PDObject.paymentDetails = await db.PaymentDetails.Where(x => x.CustomerID == id).ToListAsync();
+            pdObject.paymentDetails = await db.PaymentDetails.Where(x => x.CustomerID == id).ToListAsync();
 
-            if (PDObject.customers == null)
+            if (pdObject.customers == null)
             {
                 return HttpNotFound();
             }
-            return View(PDObject);
+            return View(pdObject);
         }
     }
 }

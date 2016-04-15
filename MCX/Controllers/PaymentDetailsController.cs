@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using MCX.Models.DbEntities;
 using MCX.Models.Tables;
@@ -15,12 +12,12 @@ namespace MCX.Controllers
     //[App_Start.CustomFilter]
     public class PaymentDetailsController : Controller
     {
-        private DbEntities db = new DbEntities();
+        private readonly DbEntities _db = new DbEntities();
 
         // GET: PaymentDetails
         public async Task<ActionResult> Index()
         {
-            return View(await db.PaymentDetails.Include("Customers").Include("Users").OrderByDescending(x=>x.ServiceEndDate).ToListAsync());
+            return View(await _db.PaymentDetails.Include("Customers").Include("Users").OrderByDescending(x => x.ServiceEndDate).ToListAsync());
         }
 
         // GET: PaymentDetails/Details/5
@@ -30,7 +27,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentDetail paymentDetail = await db.PaymentDetails.FindAsync(id);
+            var paymentDetail = await _db.PaymentDetails.FindAsync(id);
             if (paymentDetail == null)
             {
                 return HttpNotFound();
@@ -45,10 +42,9 @@ namespace MCX.Controllers
 
             ViewBag.CustomerID = CustomerID;
 
-            PaymentDetail Obj = new PaymentDetail();
-            Obj.CustomerID = Convert.ToInt32(CustomerID);
+            var obj = new PaymentDetail { CustomerID = Convert.ToInt32(CustomerID) };
 
-            return View(Obj);
+            return View(obj);
         }
 
         // POST: PaymentDetails/Create
@@ -58,50 +54,43 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "PaymentID,CustomerID,Amount,Description,Active,ServiceStartDate,ServiceEndDate,isLastService,isNotified,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,DeletedBy,DeletedDate")] PaymentDetail paymentDetail)
         {
-            if (paymentDetail.CustomerID == 0)
+            switch (paymentDetail.CustomerID)
             {
-                ViewBag.msg = "For whom you want to start this service!";
-                return View();
-
-            }
-            else
-            {
-                Users objLoggIn = (Users)Session["LoggedInUser"];
-
-                if (objLoggIn != null)
-                {
-                    paymentDetail.CreatedDate = DateTime.Now;
-                    paymentDetail.Active = true;
-                    paymentDetail.isLastService = true;
-                    paymentDetail.isNotified = false;
-                    paymentDetail.CreatedBy = objLoggIn.LoginId;
-
-                    if (ModelState.IsValid)
+                case 0:
+                    ViewBag.msg = "For whom you want to start this service!";
+                    return View();
+                default:
                     {
-                        
-                        //var abc = db.Customers.Where(x => x.CustomerID == paymentDetail.CustomerID).FirstOrDefault();
-                        //abc.UserType = "P";
-                        await db.SaveChangesAsync();
-                        try
-                        {
+                        var objLoggIn = (Users)Session["LoggedInUser"];
 
-                            db.PaymentDetails.Add(paymentDetail);
-                            //await db.SaveChangesAsync();
-
-                            //db.Entry(abc).State = EntityState.Modified;
-                            //await db.SaveChangesAsync();
-                        }
-                        catch (Exception)
+                        if (objLoggIn != null)
                         {
-                            throw;
+                            paymentDetail.CreatedDate = DateTime.Now;
+                            paymentDetail.Active = true;
+                            paymentDetail.isLastService = true;
+                            paymentDetail.isNotified = false;
+                            paymentDetail.CreatedBy = objLoggIn.LoginId;
+
+                            if (ModelState.IsValid)
+                            {
+
+                                //var abc = db.Customers.Where(x => x.CustomerID == paymentDetail.CustomerID).FirstOrDefault();
+                                //abc.UserType = "P";
+                                await _db.SaveChangesAsync();
+                                _db.PaymentDetails.Add(paymentDetail);
+                                //await db.SaveChangesAsync();
+
+                                //db.Entry(abc).State = EntityState.Modified;
+                                //await db.SaveChangesAsync();
+                                return RedirectToAction("Index");
+                            }
                         }
-                        return RedirectToAction("Index");
+                        else
+                        {
+                            return RedirectToActionPermanent("Index", "Accounts");
+                        }
                     }
-                }
-                else
-                {
-                    return RedirectToActionPermanent("Index", "Accounts");
-                }
+                    break;
             }
             return RedirectToAction("Index");
         }
@@ -113,7 +102,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentDetail paymentDetail = await db.PaymentDetails.FindAsync(id);
+            PaymentDetail paymentDetail = await _db.PaymentDetails.FindAsync(id);
             if (paymentDetail == null)
             {
                 return HttpNotFound();
@@ -130,8 +119,8 @@ namespace MCX.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(paymentDetail).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                _db.Entry(paymentDetail).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(paymentDetail);
@@ -144,7 +133,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PaymentDetail paymentDetail = await db.PaymentDetails.FindAsync(id);
+            PaymentDetail paymentDetail = await _db.PaymentDetails.FindAsync(id);
             if (paymentDetail == null)
             {
                 return HttpNotFound();
@@ -157,9 +146,9 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            PaymentDetail paymentDetail = await db.PaymentDetails.FindAsync(id);
-            db.PaymentDetails.Remove(paymentDetail);
-            await db.SaveChangesAsync();
+            PaymentDetail paymentDetail = await _db.PaymentDetails.FindAsync(id);
+            _db.PaymentDetails.Remove(paymentDetail);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -167,7 +156,7 @@ namespace MCX.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

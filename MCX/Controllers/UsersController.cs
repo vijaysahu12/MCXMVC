@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
+using MCX.Models.CustomModel;
 using MCX.Models.DbEntities;
 using MCX.Models.Tables;
 
@@ -16,14 +14,14 @@ namespace MCX.Controllers
     {
 
 
-        private DbEntities db = new DbEntities();
+        private readonly DbEntities _db = new DbEntities();
 
         // GET: Users
         public async Task<ActionResult> Index()
         {
 
-            ViewBag.LoggedInUser = (Users)Session["LoggedInUser"];
-            return View(await db.Users.ToListAsync());
+            ViewBag.LoggedInUser = Session["LoggedInUser"];
+            return View(await _db.Users.ToListAsync());
         }
 
         // GET: Users/Details/5
@@ -33,7 +31,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Users users = await db.Users.FindAsync(id);
+            var users = await _db.Users.FindAsync(id);
             if (users == null)
             {
                 return HttpNotFound();
@@ -54,18 +52,14 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "LoginId,Username,Password,EmailId,Address,UserType,IsActive,Mobile")] Users users)
         {
-            if (ModelState.IsValid)
-            {
-                users.CreatedDate = DateTime.UtcNow;
-                users.IsActive = true;
-                users.IsDelete = false;
-                users.ModifiedDate = DateTime.UtcNow;
-                db.Users.Add(users);
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-
-            return View(users);
+            if (!ModelState.IsValid) return View(users);
+            users.CreatedDate = DateTime.UtcNow;
+            users.IsActive = true;
+            users.IsDelete = false;
+            users.ModifiedDate = DateTime.UtcNow;
+            _db.Users.Add(users);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: Users/Edit/5
@@ -75,7 +69,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Users users = await db.Users.FindAsync(id);
+            var users = await _db.Users.FindAsync(id);
             if (users == null)
             {
                 return HttpNotFound();
@@ -90,13 +84,10 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "LoginId,Username,Password,EmailId,Address,UserType,IsActive,IsDelete,CreatedDate,ModifiedDate,Mobile")] Users users)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(users).State = EntityState.Modified;
-                await db.SaveChangesAsync();
-                return RedirectToAction("Index");
-            }
-            return View(users);
+            if (!ModelState.IsValid) return View(users);
+            _db.Entry(users).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: Users/Delete/5
@@ -106,7 +97,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Users users = await db.Users.FindAsync(id);
+            var users = await _db.Users.FindAsync(id);
             if (users == null)
             {
                 return HttpNotFound();
@@ -119,9 +110,9 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            Users users = await db.Users.FindAsync(id);
-            db.Users.Remove(users);
-            await db.SaveChangesAsync();
+            var users = await _db.Users.FindAsync(id);
+            _db.Users.Remove(users);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -130,27 +121,43 @@ namespace MCX.Controllers
         [HttpPost]
         public async Task<ActionResult> UserListForDropdown()
         {
-            List<Users> users = await db.Users.ToListAsync();
+            var users = await _db.Users.ToListAsync();
 
 
-            List<MCX.Models.CustomModel.UserDropdown> UserList = users.Select(x => new MCX.Models.CustomModel.UserDropdown
+            var userList = users.Select(x => new UserDropdown
             {
                 LoginId = x.LoginId,
                 Username = x.Username
 
             }).ToList();
 
-            return Json(UserList);
+            return Json(userList);
 
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> UserListForDropdownForCustomerGrid()
+        {
+            var users = await _db.Users.ToListAsync();
+            var loggedInUser = (Users)Session["LoggedInUser"];
+            var userList = users.Where(x => x.LoginId != loggedInUser.LoginId).Select(x => new UserDropdown
+            {
+                LoginId = x.LoginId,
+                Username = x.Username
+
+            }).ToList();
+
+            return Json(userList);
+
+        }
 
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

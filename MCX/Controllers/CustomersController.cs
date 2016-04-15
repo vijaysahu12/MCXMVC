@@ -16,15 +16,15 @@ namespace MCX.Controllers
 {
     // [Authorize]
 
-    [MCX.App_Start.SessionExpire]
+    [App_Start.SessionExpire]
     public class CustomersController : Controller
     {
-        private DbEntities db = new DbEntities();
-        private readonly MCX.HelperClass.Helper _Helper;
+        private readonly DbEntities _db = new DbEntities();
+        private readonly Helper _helper;
 
         public CustomersController()
         {
-            _Helper = (MCX.HelperClass.Helper)Activator.CreateInstance(typeof(MCX.HelperClass.Helper), true);
+            _helper = (Helper)Activator.CreateInstance(typeof(Helper), true);
         }
         //public CustomersController(MCX.HelperClass.Helper _helperRef)
         //{
@@ -51,7 +51,7 @@ namespace MCX.Controllers
                         file.SaveAs(filepath);
 
                         //string lineToWrite = null;
-                        using (StreamReader reader = new StreamReader(filepath))
+                        using (new StreamReader(filepath))
                         {
                             //lineToWrite = reader.ReadLine();
                             //string objCustomerListNew = _Helper.readExcelFile(filepath, "dsf");
@@ -67,19 +67,14 @@ namespace MCX.Controllers
                                     case "xlsx":
                                         dt = new DataTable();
 
-                                        dt = _Helper.readExcelFileToDT(filepath);//"D:\\Book1.xlsx"
+                                        dt = _helper.ReadExcelFileToDt(filepath);//"D:\\Book1.xlsx"
 
                                         var list = MCX.HelperClass.Class.DataTableToListHelper.DataTableToList<Customers>(dt);
                                         try
                                         {
-
-
-
-
-
                                             if (list != null)
                                             {
-                                                var LoggedInUser = (Users)Session["LoggedInUser"];
+                                                var loggedInUser = (Users)Session["LoggedInUser"];
                                                 //list.ForEach((Customers) =>
                                                 //{
 
@@ -101,7 +96,7 @@ namespace MCX.Controllers
 
                                                 foreach (var a in list)
                                                 {
-                                                    a.CreatedBy = LoggedInUser.LoginId;
+                                                    a.CreatedBy = loggedInUser.LoginId;
                                                     a.CreatedDate = DateTime.Now;
 
 
@@ -143,14 +138,14 @@ namespace MCX.Controllers
                                                     }
 
                                                     a.IsActive = true;
-                                                    a.LeadOwner = LoggedInUser.LoginId;
+                                                    a.LeadOwner = loggedInUser.LoginId;
                                                     a.LeadSourceId = 2;
                                                     a.LeadStatusId = 4;
                                                     a.ProductId = 1;
                                                     a.StageId = 1;
 
-                                                    db.Customers.Add(a);
-                                                    db.SaveChanges();
+                                                    _db.Customers.Add(a);
+                                                    _db.SaveChanges();
                                                 }
 
                                             }
@@ -174,7 +169,7 @@ namespace MCX.Controllers
                 }
 
             }
-            catch (Exception ex)
+            catch
             {
 
             }
@@ -182,37 +177,39 @@ namespace MCX.Controllers
             return RedirectToAction("IndexPartial");
         }
 
-        [NonAction]
-        bool SaveExcelFile(List<Customers> customersList)
-        {
-            try
-            {
-
-                foreach (var customers in customersList)
+        /*
+                [NonAction]
+                bool SaveExcelFile(List<Customers> customersList)
                 {
-                    customers.IsActive = true;
-                    customers.Status = "A";
-                    customers.CustomerType = "L";
-                    customers.CreatedDate = DateTime.UtcNow;
-                    customers.IsDeleted = false;
-                    customers.ModifiedDate = DateTime.UtcNow;
-                    customers.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
-                    var LoggedInUser = (Users)Session["LoggedInUser"];
-                    customers.CreatedBy = LoggedInUser == null ? 1 : LoggedInUser.LoginId;
-                    customers.Description = "Imported from excel";
+                    try
+                    {
 
-                    db.Customers.Add(customers);
-                    db.SaveChangesAsync();
+                        foreach (var customers in customersList)
+                        {
+                            customers.IsActive = true;
+                            customers.Status = "A";
+                            customers.CustomerType = "L";
+                            customers.CreatedDate = DateTime.UtcNow;
+                            customers.IsDeleted = false;
+                            customers.ModifiedDate = DateTime.UtcNow;
+                            customers.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
+                            var loggedInUser = (Users)Session["LoggedInUser"];
+                            customers.CreatedBy = loggedInUser == null ? 1 : loggedInUser.LoginId;
+                            customers.Description = "Imported from excel";
 
+                            _db.Customers.Add(customers);
+                            _db.SaveChangesAsync();
+
+                        }
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+
+                        return false;
+                    }
                 }
-                return true;
-            }
-            catch (Exception)
-            {
-
-                return false;
-            }
-        }
+        */
 
         // GET: Customers
         //[HttpGet]
@@ -318,7 +315,7 @@ namespace MCX.Controllers
         // GET: Customers
         public async Task<ActionResult> IndexMvcGrid()
         {
-            var customers = db.Customers.Include(c => c.LeadSource).Include(c => c.LeadStatu).Include(c => c.Product).Include(c => c.Stage);
+            var customers = _db.Customers.Include(c => c.LeadSource).Include(c => c.LeadStatu).Include(c => c.Product).Include(c => c.Stage);
             return View(await customers.ToListAsync());
         }
 
@@ -332,7 +329,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customers customers = await db.Customers.FindAsync(id);
+            Customers customers = await _db.Customers.FindAsync(id);
             if (customers == null)
             {
                 return HttpNotFound();
@@ -343,11 +340,11 @@ namespace MCX.Controllers
         // GET: Customers/Create
         public ActionResult Create()
         {
-            ViewBag.LeadSourceId = new SelectList(db.LeadSources, "LeadSourceID", "SourceName");
-            ViewBag.LeadStatusId = new SelectList(db.LeadStatus, "LeadStatusId", "LeadStatus");
-            ViewBag.ProductId = new SelectList(db.Products, "ProductId", "ProductName");
-            ViewBag.StageId = new SelectList(db.Stages, "StageId", "StageName");
-            ViewBag.LeadOwnerList = new SelectList(db.Users, "LoginId", "Username");
+            ViewBag.LeadSourceId = new SelectList(_db.LeadSources, "LeadSourceID", "SourceName");
+            ViewBag.LeadStatusId = new SelectList(_db.LeadStatus, "LeadStatusId", "LeadStatus");
+            ViewBag.ProductId = new SelectList(_db.Products, "ProductId", "ProductName");
+            ViewBag.StageId = new SelectList(_db.Stages, "StageId", "StageName");
+            ViewBag.LeadOwnerList = new SelectList(_db.Users, "LoginId", "Username");
             return View();
         }
 
@@ -405,36 +402,29 @@ namespace MCX.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Customers.Add(customers);
+                _db.Customers.Add(customers);
 
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
 
                 if (!string.IsNullOrWhiteSpace(customers.DueDate))
                 {
-                    try
-                    {
-                        var LoggedInUser = (Users)Session["LoggedInUser"];
-                        db.PaymentDetails.Add(
-                            new PaymentDetail
-                            {
-                                Active = true,
-                                Amount = 0,
-                                CreatedBy = LoggedInUser == null ? 1 : LoggedInUser.LoginId,
-                                CreatedDate = DateTime.Now,
-                                CustomerID = customers.CustomerID,
-                                Description = "Giving Free Trial Services",
-                                isLastService = true,
-                                ServiceStartDate = DateTime.Now,
-                                ServiceEndDate = Convert.ToDateTime(customers.DueDate),
-                                ServiceType = 2 // 2 stand for free trials
-                            });
+                    var loggedInUser = (Users)Session["LoggedInUser"];
+                    _db.PaymentDetails.Add(
+                        new PaymentDetail
+                        {
+                            Active = true,
+                            Amount = 0,
+                            CreatedBy = loggedInUser == null ? 1 : loggedInUser.LoginId,
+                            CreatedDate = DateTime.Now,
+                            CustomerID = customers.CustomerID,
+                            Description = "Giving Free Trial Services",
+                            isLastService = true,
+                            ServiceStartDate = DateTime.Now,
+                            ServiceEndDate = Convert.ToDateTime(customers.DueDate),
+                            ServiceType = 2 // 2 stand for free trials
+                        });
 
-                        await db.SaveChangesAsync();
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
+                    await _db.SaveChangesAsync();
                 }
 
 
@@ -442,18 +432,14 @@ namespace MCX.Controllers
                 {
                     return RedirectToAction("Index", "Potentials");
                 }
-                else
-                {
-                    return RedirectToAction("Create");
-                }
-
+                return RedirectToAction("Create");
             }
 
-            ViewBag.LeadSourceId = new SelectList(db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
-            ViewBag.LeadStatusId = new SelectList(db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
-            ViewBag.ProductId = new SelectList(db.Products, "ProductId", "ProductName", customers.ProductId);
-            ViewBag.StageId = new SelectList(db.Stages, "StageId", "StageName", customers.StageId);
-            ViewBag.LeadOwnerList = new SelectList(db.Users, "LoginId", "Username");
+            ViewBag.LeadSourceId = new SelectList(_db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
+            ViewBag.LeadStatusId = new SelectList(_db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
+            ViewBag.ProductId = new SelectList(_db.Products, "ProductId", "ProductName", customers.ProductId);
+            ViewBag.StageId = new SelectList(_db.Stages, "StageId", "StageName", customers.StageId);
+            ViewBag.LeadOwnerList = new SelectList(_db.Users, "LoginId", "Username");
 
             customers.ConvertToPotential = 0;
             return View(customers);
@@ -469,17 +455,17 @@ namespace MCX.Controllers
 
 
 
-            Customers customers = await db.Customers.FindAsync(id);
+            Customers customers = await _db.Customers.FindAsync(id);
             if (customers == null)
             {
                 return HttpNotFound();
             }
 
 
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            var sb = new System.Text.StringBuilder();
 
 
-            var a = await db.Descriptions.Where(x => x.CustomerID == id).ToListAsync();
+            var a = await _db.Descriptions.Where(x => x.CustomerID == id).ToListAsync();
 
 
             sb.Append(customers.Description);
@@ -490,13 +476,13 @@ namespace MCX.Controllers
 
             customers.Description = sb.ToString();
 
-            var paymentDet = db.PaymentDetails.Where(x => x.CustomerID == id && x.isLastService == true && x.Active == true).OrderBy(x => x.CreatedDate).ToListAsync();
+            await _db.PaymentDetails.Where(x => x.CustomerID == id && x.isLastService == true && x.Active == true).OrderBy(x => x.CreatedDate).ToListAsync();
 
-            ViewBag.LeadSourceId = new SelectList(db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
-            ViewBag.LeadStatusId = new SelectList(db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
-            ViewBag.ProductId = new SelectList(db.Products, "ProductId", "ProductName", customers.ProductId);
-            ViewBag.StageId = new SelectList(db.Stages, "StageId", "StageName", customers.StageId);
-            ViewBag.LeadOwnerList = new SelectList(db.Users, "LoginId", "Username");
+            ViewBag.LeadSourceId = new SelectList(_db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
+            ViewBag.LeadStatusId = new SelectList(_db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
+            ViewBag.ProductId = new SelectList(_db.Products, "ProductId", "ProductName", customers.ProductId);
+            ViewBag.StageId = new SelectList(_db.Stages, "StageId", "StageName", customers.StageId);
+            ViewBag.LeadOwnerList = new SelectList(_db.Users, "LoginId", "Username");
             return View(customers);
         }
 
@@ -514,42 +500,42 @@ namespace MCX.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var LoggedInUser = (Users)Session["LoggedInUser"];
+                    var loggedInUser = (Users)Session["LoggedInUser"];
 
 
                     customers.ModifiedDate = DateTime.Now;
-                    customers.ModifiedBy = LoggedInUser.LoginId;
+                    customers.ModifiedBy = loggedInUser.LoginId;
 
                     if (customers.ConvertToPotential == 1)
                     {
                         customers.CustomerType = "P";
                     }
 
-                    db.Entry(customers).State = EntityState.Modified;
-                    db.SaveChangesAsync();
+                    _db.Entry(customers).State = EntityState.Modified;
+                    await _db.SaveChangesAsync();
 
 
                     if (!string.IsNullOrWhiteSpace(customers.NewDescription))
                     {
                         if (customers.NewDescription.Length > 1)
                         {
-                            Descriptions objDesc = new Descriptions();
+                            var objDesc = new Descriptions();
                             objDesc.Description = customers.NewDescription;
-                            db.Descriptions.Add(objDesc);
-                            await db.SaveChangesAsync();
+                            _db.Descriptions.Add(objDesc);
+                            await _db.SaveChangesAsync();
                         }
 
                     }
                     //return RedirectToAction("Index");
                 }
-                ViewBag.LeadSourceId = new SelectList(db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
-                ViewBag.LeadStatusId = new SelectList(db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
-                ViewBag.ProductId = new SelectList(db.Products, "ProductId", "ProductName", customers.ProductId);
-                ViewBag.StageId = new SelectList(db.Stages, "StageId", "StageName", customers.StageId);
-                ViewBag.LeadOwnerList = new SelectList(db.Users, "LoginId", "Username");
+                ViewBag.LeadSourceId = new SelectList(_db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
+                ViewBag.LeadStatusId = new SelectList(_db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
+                ViewBag.ProductId = new SelectList(_db.Products, "ProductId", "ProductName", customers.ProductId);
+                ViewBag.StageId = new SelectList(_db.Stages, "StageId", "StageName", customers.StageId);
+                ViewBag.LeadOwnerList = new SelectList(_db.Users, "LoginId", "Username");
                 return View(customers);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new Exception("Exception throws while updating records!!!");
                 //return RedirectToAction("IndexPartial");
@@ -563,7 +549,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customers customers = await db.Customers.FindAsync(id);
+            Customers customers = await _db.Customers.FindAsync(id);
             if (customers == null)
             {
                 return HttpNotFound();
@@ -576,9 +562,9 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            Customers customers = await db.Customers.FindAsync(id);
-            db.Customers.Remove(customers);
-            await db.SaveChangesAsync();
+            Customers customers = await _db.Customers.FindAsync(id);
+            _db.Customers.Remove(customers);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -586,7 +572,7 @@ namespace MCX.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -594,22 +580,22 @@ namespace MCX.Controllers
 
         [HttpGet]
         //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> ConvertToPotential(long? CustomerID)
+        public async Task<ActionResult> ConvertToPotential(long? customerId)
         {
 
-            var LoggedInUser = (Users)Session["LoggedInUser"];
+            var loggedInUser = (Users)Session["LoggedInUser"];
 
-            Customers customers = await db.Customers.FindAsync(Convert.ToInt32(CustomerID));
+            Customers customers = await _db.Customers.FindAsync(Convert.ToInt32(customerId));
             customers.CustomerType = "P";
             customers.ModifiedDate = DateTime.Now;
-            customers.ModifiedBy = LoggedInUser.LoginId;
-            db.Entry(customers).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+            customers.ModifiedBy = loggedInUser.LoginId;
+            _db.Entry(customers).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
 
             //return RedirectToAction("Index", "Customers");
 
 
-            return RedirectToAction("Create", "PaymentDetails", new { CustomerID = CustomerID });
+            return RedirectToAction("Create", "PaymentDetails", new { CustomerID = customerId });
         }
 
         [NonAction]
@@ -620,23 +606,23 @@ namespace MCX.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> DeleteMultipleCustomers(string Ids)
+        public async Task<ActionResult> DeleteMultipleCustomers(string ids)
         {
             try
             {
 
-                if (!string.IsNullOrWhiteSpace(Ids))
+                if (!string.IsNullOrWhiteSpace(ids))
                 {
-                    var list = Ids.Remove(Ids.Length - 1, 1).Split(',');
+                    var list = ids.Remove(ids.Length - 1, 1).Split(',');
 
                     foreach (var id in list)
                     {
 
                         long kid = Convert.ToInt32(id);
 
-                        Customers customers = db.Customers.Find(kid);
+                        Customers customers = _db.Customers.Find(kid);
 
-                        var LoggedInUser = (Users)Session["LoggedInUser"];
+                        var loggedInUser = (Users)Session["LoggedInUser"];
 
                         if (customers != null)
                         {
@@ -644,26 +630,21 @@ namespace MCX.Controllers
                             customers.IsActive = false;
                             customers.DueDate = "DateTime.Now()";
                             customers.IsDeleted = true;
-                            customers.Deletedby = LoggedInUser.LoginId;
-                            db.Entry(customers).State = EntityState.Modified;
-                            await db.SaveChangesAsync();
+                            customers.Deletedby = loggedInUser.LoginId;
+                            _db.Entry(customers).State = EntityState.Modified;
+                            await _db.SaveChangesAsync();
                         }
 
 
-                        PaymentDetail payment = db.PaymentDetails.Where(x => x.CustomerID == kid).SingleOrDefault();
-                        if (payment != null)
-                        {
-                            payment.Active = false;
-                            payment.isLastService = false;
-                            payment.DeletedBy = LoggedInUser.LoginId;
-                            db.Entry(payment).State = EntityState.Modified;
-                            await db.SaveChangesAsync();
+                        PaymentDetail payment = _db.PaymentDetails.SingleOrDefault(x => x.CustomerID == kid);
+                        if (payment == null) continue;
+                        payment.Active = false;
+                        payment.isLastService = false;
+                        payment.DeletedBy = loggedInUser.LoginId;
+                        _db.Entry(payment).State = EntityState.Modified;
+                        await _db.SaveChangesAsync();
 
-                            //Validation failed for one or more entities. See 'EntityValidationErrors' property for more details.
-                        }
-
-
-
+                        //Validation failed for one or more entities. See 'EntityValidationErrors' property for more details.
                     }
                     //await db.SaveChangesAsync();
                 }
@@ -671,7 +652,7 @@ namespace MCX.Controllers
             }
             catch (System.Data.Entity.Validation.DbEntityValidationException ex)
             {
-                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                var sb = new System.Text.StringBuilder();
 
                 foreach (var failure in ex.EntityValidationErrors)
                 {
@@ -685,7 +666,7 @@ namespace MCX.Controllers
 
                 throw new System.Data.Entity.Validation.DbEntityValidationException(
                     "Entity Validation Failed - errors follow:\n" +
-                    sb.ToString(), ex
+                    sb, ex
                 ); // Add the original exception as the innerException
 
             }
@@ -710,12 +691,12 @@ namespace MCX.Controllers
 
             string[] a = Ids.Split(',').ToArray();
 
-            int id = 0;
-            Customers objCustomer = null;
+            int id;
+
 
             try
             {
-
+                Customers objCustomer = null;
                 for (int i = 0; i < (a.Length - 1); i++)
                 {
 
@@ -725,15 +706,15 @@ namespace MCX.Controllers
                         if (id > 0)
                         {
                             objCustomer = new Customers();
-                            objCustomer = db.Customers.Find(id);
+                            objCustomer = _db.Customers.Find(id);
 
                             objCustomer.LeadOwner = Convert.ToInt32(LoginId);
                             objCustomer.DueDate = DateTime.Now.ToShortDateString();
-                            db.Entry(objCustomer).State = EntityState.Modified;
+                            _db.Entry(objCustomer).State = EntityState.Modified;
                         }
-                        db.SaveChangesAsync();
+                        await _db.SaveChangesAsync();
                     }
-                    catch
+                    catch (Exception)
                     {
 
                     }
@@ -763,8 +744,8 @@ namespace MCX.Controllers
         {
             var objUsers = (Users)Session["LoggedInUser"];
             var count = 0;
-            string[] ab1 = new string[2];
-            IQueryable<Customers> customers = db.Customers
+            var ab1 = new string[2];
+            var customers = _db.Customers
                 .Where(x => x.IsDeleted == false && x.IsActive == true)
 
                 .Include(c => c.LeadSource)
@@ -790,18 +771,17 @@ namespace MCX.Controllers
             }
             else if (DetailForUserID > 0)
             {
-                customers = db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive == true);
+                customers = _db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
             }
             else if (DetailForUserID == -1)
             {
-                customers = db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive == true);
+                customers = _db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
             }
 
             count = customers.Count();
             if (!String.IsNullOrEmpty(searchString))
             {
-                customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString)
-                || s.Email.Contains(searchString));
+                customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString) || s.Email.Contains(searchString) || s.Mobile.Contains(searchString));
             }
             switch (sortOrder)
             {
@@ -846,7 +826,7 @@ namespace MCX.Controllers
             {
                 //Because its a exception raised after ajax invocation
                 //Lets return Json
-                filterContext.Result = new JsonResult()
+                filterContext.Result = new JsonResult
                 {
                     Data = filterContext.Exception.Message,
                     JsonRequestBehavior = JsonRequestBehavior.AllowGet

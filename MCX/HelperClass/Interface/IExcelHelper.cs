@@ -10,11 +10,11 @@ namespace MCX.HelperClass.Interface
 {
     public interface IExceReaderlHelper
     {
-        List<Customers> readExcelFile(string path);
-        string readExcelFile(string path, string transactionType);
-        void readExcelFileHelpers(string path);
-        int multiply(int a, int b);
-        DataTable readExcelFileToDT(string fileName);
+        List<Customers> ReadExcelFile(string path);
+        string ReadExcelFile(string path, string transactionType);
+        void ReadExcelFileHelpers(string path);
+        int Multiply(int a, int b);
+        DataTable ReadExcelFileToDt(string fileName);
     }
 
 
