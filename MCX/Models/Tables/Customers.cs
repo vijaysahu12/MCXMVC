@@ -39,6 +39,9 @@ namespace MCX.Models.Tables
         [Display(Name = "Due Date")]
         public string DueDate { get; set; }
 
+
+        public long LeadOwner { get; set; }
+
         [NotMapped]
         public string LeadOwnerName { get; set; }
 
@@ -61,9 +64,7 @@ namespace MCX.Models.Tables
         [Display(Name = "Product ")]
         public Nullable<int> ProductId { get; set; }
 
-
-        public long OwnerId { get; set; }
-
+         
         public Nullable<int> LeadStatusId { get; set; }
         public Nullable<int> LeadSourceId { get; set; }
         public Nullable<int> StageId { get; set; }
@@ -116,9 +117,8 @@ namespace MCX.Models.Tables
         [Display(Name = "Lead Status")]
         public virtual LeadStatu LeadStatu { get; set; }
 
-
-        [ForeignKey("OwnerId")]
-        public virtual Users Login { get; set; }
+        [ForeignKey("LeadOwner")]
+        public Users OwnerLead { get; set; }
 
         [Display(Name = "Product")]
         public virtual Product Product { get; set; }

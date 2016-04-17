@@ -138,7 +138,7 @@ namespace MCX.Controllers
                                                     }
 
                                                     a.IsActive = true;
-                                                    a.OwnerId = loggedInUser.LoginId;
+                                                    a.LeadOwner = loggedInUser.LoginId;
                                                     a.LeadSourceId = 2;
                                                     a.LeadStatusId = 4;
                                                     a.ProductId = 1;
@@ -325,7 +325,9 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customers customers = await _db.Customers.FindAsync(id);
+            //Customers customers = await _db.Customers.FindAsync(id);
+            Customers customers = await _db.Customers.Include(c => c.OwnerLead).Where(c => c.CustomerID == id).FirstOrDefaultAsync();
+      
             if (customers == null)
             {
                 return HttpNotFound();
@@ -697,7 +699,7 @@ namespace MCX.Controllers
                             objCustomer = new Customers();
                             objCustomer = _db.Customers.Find(id);
 
-                            objCustomer.OwnerId = Convert.ToInt32(LoginId);
+                            objCustomer.LeadOwner = Convert.ToInt32(LoginId);
                             objCustomer.DueDate = DateTime.Now.ToShortDateString();
                             _db.Entry(objCustomer).State = EntityState.Modified;
                         }
@@ -738,7 +740,7 @@ namespace MCX.Controllers
                 .Include(c => c.LeadSource)
                 .Include(c => c.LeadStatu)
                 .Include(c => c.Product)
-                .Include(c => c.Stage).Include(c => c.OwnerId);
+                .Include(c => c.Stage).Include(c => c.LeadOwner);
 
             if (CustomerType == "0")
             {
@@ -756,12 +758,12 @@ namespace MCX.Controllers
             }
             else if (DetailForUserID > 0)
             {
-                customers = _db.Customers.Where(x => x.OwnerId == DetailForUserID && x.IsDeleted == false && x.IsActive);
+                customers = _db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
             }
             else if (DetailForUserID == -1)
             {
                 var objUsers = (Users)Session["LoggedInUser"];
-                customers = _db.Customers.Where(x => x.OwnerId == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
+                customers = _db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
             }
 
             if (!String.IsNullOrEmpty(searchString))

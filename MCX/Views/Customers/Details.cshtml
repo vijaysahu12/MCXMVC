@@ -53,7 +53,7 @@
                                     @Html.DisplayNameFor(model => model.LeadOwner)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(model => model.LeadOwner)
+                                    @Html.DisplayFor(model => Model.OwnerLead.FirstName) @Html.DisplayFor(model => Model.OwnerLead.LastName)
                                 </td>
                             </tr>
                             <tr>
@@ -104,7 +104,7 @@
                         <tbody>
                             <tr>
                                 <td>LeadOwner</td>
-                                <td>@Model.LeadOwner</td>
+                                <td>@Model.OwnerLead.FirstName @Model.OwnerLead.LastName</td>
                                 <td>Title</td>
                                 <td></td>
                             </tr>

@@ -67,7 +67,7 @@
                             <option value="Prof.">Prof.</option>
                         </select>
                     </div>
-                    <div class="" style="padding-right: 0px ! important; padding-left:0px; width: 199px;">
+                    <div>
                         @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control requiredFields" } })
                         @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                     </div>
