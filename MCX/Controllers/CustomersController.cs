@@ -329,7 +329,7 @@ namespace MCX.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Customers customers = await _db.Customers.FindAsync(id);
+            Customers customers = await _db.Customers.Include(c=>c.OwnerLead).Where(c=>c.CustomerID == id).FirstOrDefaultAsync();
             if (customers == null)
             {
                 return HttpNotFound();
@@ -471,7 +471,7 @@ namespace MCX.Controllers
             sb.Append(customers.Description);
 
             foreach (var ab in a)
-            { sb.Append(ab.Description + " <br />"); }
+            { sb.Append(" || "+ab.Description + " || "); }
 
 
             customers.Description = sb.ToString();
@@ -520,6 +520,7 @@ namespace MCX.Controllers
                         if (customers.NewDescription.Length > 1)
                         {
                             var objDesc = new Descriptions();
+                            objDesc.CustomerID = customers.CustomerID;
                             objDesc.Description = customers.NewDescription;
                             _db.Descriptions.Add(objDesc);
                             await _db.SaveChangesAsync();
@@ -747,7 +748,7 @@ namespace MCX.Controllers
             var ab1 = new string[2];
             var customers = _db.Customers
                 .Where(x => x.IsDeleted == false && x.IsActive == true)
-
+                .Include(c => c.OwnerLead)
                 .Include(c => c.LeadSource)
                 .Include(c => c.LeadStatu)
                 .Include(c => c.Product)

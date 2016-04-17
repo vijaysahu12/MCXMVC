@@ -76,8 +76,9 @@ namespace MCX.Controllers
 
                                 //var abc = db.Customers.Where(x => x.CustomerID == paymentDetail.CustomerID).FirstOrDefault();
                                 //abc.UserType = "P";
-                                await _db.SaveChangesAsync();
+                             
                                 _db.PaymentDetails.Add(paymentDetail);
+                                await _db.SaveChangesAsync();
                                 //await db.SaveChangesAsync();
 
                                 //db.Entry(abc).State = EntityState.Modified;

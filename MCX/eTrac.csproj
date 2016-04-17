@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -288,6 +289,7 @@
     <Content Include="Scripts\ModalWindowEffects\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\New folder\" />
     <Folder Include="Helper\" />
     <Folder Include="saveFile\" />
   </ItemGroup>

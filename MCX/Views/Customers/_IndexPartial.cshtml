@@ -12,7 +12,7 @@
                     <a href="/Customers/Details/@item.CustomerID"> @Html.DisplayFor(modelItem => item.FirstName)  @Html.DisplayFor(modelItem => item.LastName).ToHtmlString()</a>
                     @*     @Html.ActionLink((@Html.DisplayFor(modelItem => item.FirstName) + " " + @Html.DisplayFor(modelItem => item.LastName).ToHtmlString()), "Details", "Customers", new { parentPartId = item.CustomerID }))*@
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.LeadOwner)</td>
+                <td>@Html.DisplayFor(modelItem => item.OwnerLead.FirstName)@Html.DisplayFor(modelItem => item.OwnerLead.LastName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Mobile)</td>
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                 <td>@Html.DisplayFor(modelItem => item.Product.ProductName)</td>

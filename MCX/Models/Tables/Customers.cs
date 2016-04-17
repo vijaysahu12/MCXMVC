@@ -123,6 +123,9 @@ namespace MCX.Models.Tables
 
         public virtual Stage Stage { get; set; }
 
+        [ForeignKey("LeadOwner")]
+        public Users OwnerLead { get; set; }
+
 
     }
 }
