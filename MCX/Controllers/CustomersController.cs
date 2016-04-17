@@ -138,7 +138,7 @@ namespace MCX.Controllers
                                                     }
 
                                                     a.IsActive = true;
-                                                    a.LeadOwner = loggedInUser.LoginId;
+                                                    a.OwnerId = loggedInUser.LoginId;
                                                     a.LeadSourceId = 2;
                                                     a.LeadStatusId = 4;
                                                     a.ProductId = 1;
@@ -308,10 +308,6 @@ namespace MCX.Controllers
             ViewBag.Title = "Leads Details";
             return View();
         }
-
-
-
-
         // GET: Customers
         public async Task<ActionResult> IndexMvcGrid()
         {
@@ -362,14 +358,7 @@ namespace MCX.Controllers
             customers.Status = "A";
 
 
-            if (customers.ConvertToPotential == 1)
-            {
-                customers.CustomerType = "P";
-            }
-            else
-            {
-                customers.CustomerType = "L";
-            }
+            customers.CustomerType = customers.ConvertToPotential == 1 ? "P" : "L";
             //CreatedBy,
             customers.CreatedDate = DateTime.UtcNow;
             customers.IsDeleted = false;
@@ -708,7 +697,7 @@ namespace MCX.Controllers
                             objCustomer = new Customers();
                             objCustomer = _db.Customers.Find(id);
 
-                            objCustomer.LeadOwner = Convert.ToInt32(LoginId);
+                            objCustomer.OwnerId = Convert.ToInt32(LoginId);
                             objCustomer.DueDate = DateTime.Now.ToShortDateString();
                             _db.Entry(objCustomer).State = EntityState.Modified;
                         }
@@ -742,8 +731,6 @@ namespace MCX.Controllers
 
         public async Task<ActionResult> IndexPartial(string sortOrder, string currentFilter, string searchString, int? page, string CustomerType = "L", int DetailForUserID = 0)
         {
-            var objUsers = (Users)Session["LoggedInUser"];
-            var count = 0;
             var ab1 = new string[2];
             var customers = _db.Customers
                 .Where(x => x.IsDeleted == false && x.IsActive == true)
@@ -751,9 +738,7 @@ namespace MCX.Controllers
                 .Include(c => c.LeadSource)
                 .Include(c => c.LeadStatu)
                 .Include(c => c.Product)
-                .Include(c => c.Stage);
-
-            count = customers.Count();
+                .Include(c => c.Stage).Include(c => c.OwnerId);
 
             if (CustomerType == "0")
             {
@@ -771,14 +756,14 @@ namespace MCX.Controllers
             }
             else if (DetailForUserID > 0)
             {
-                customers = _db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
+                customers = _db.Customers.Where(x => x.OwnerId == DetailForUserID && x.IsDeleted == false && x.IsActive);
             }
             else if (DetailForUserID == -1)
             {
-                customers = _db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
+                var objUsers = (Users)Session["LoggedInUser"];
+                customers = _db.Customers.Where(x => x.OwnerId == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
             }
 
-            count = customers.Count();
             if (!String.IsNullOrEmpty(searchString))
             {
                 customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString) || s.Email.Contains(searchString) || s.Mobile.Contains(searchString));
@@ -798,19 +783,6 @@ namespace MCX.Controllers
                     customers = customers.OrderBy(s => s.LastName);
                     break;
             }
-
-            count = customers.Count();
-
-            //customers = //db.Users.Join(customers,us => us.LoginId,(customers,us) => new { OwnerName = person.Name, Pet = pet.Name });
-
-
-            //    (from u in db.Users
-            //     join cu in customers
-            //     on u.LoginId equals cu.LeadOwner
-            //     select new { cu.IsActive, cu.Address, cu.City, cu.ConvertToPotential, cu.CreatedBy, cu.CreatedDate, cu.CustomerID, cu.CustomerType, cu.Deletedby, cu.Description, cu, u.FirstName, u.LastName }).ToList();
-
-
-
 
             return PartialView("~/Views/Customers/_IndexPartial.cshtml", await customers.ToListAsync());
         }

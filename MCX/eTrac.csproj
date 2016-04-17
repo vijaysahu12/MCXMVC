@@ -137,6 +137,10 @@
     <Compile Include="Migrations\201604100815552_IntialDatabaseSetupLive.Designer.cs">
       <DependentUpon>201604100815552_IntialDatabaseSetupLive.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604161757259_NewChanges.cs" />
+    <Compile Include="Migrations\201604161757259_NewChanges.Designer.cs">
+      <DependentUpon>201604161757259_NewChanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -144,6 +148,7 @@
     <Compile Include="Models\CustomModel\PaymentDetailsModel.cs" />
     <Compile Include="Models\CustomModel\UsersModel.cs" />
     <Compile Include="Models\DbEntities\DbEntities.cs" />
+    <Compile Include="Models\DbEntities\DefaultValues.cs" />
     <Compile Include="Models\Tables\CustomerRoleDuration.cs" />
     <Compile Include="Models\Tables\Customers.cs" />
     <Compile Include="Models\Tables\Descriptions.cs" />
@@ -294,6 +299,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201604100815552_IntialDatabaseSetupLive.resx">
       <DependentUpon>201604100815552_IntialDatabaseSetupLive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604161757259_NewChanges.resx">
+      <DependentUpon>201604161757259_NewChanges.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
