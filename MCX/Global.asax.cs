@@ -1,6 +1,8 @@
-﻿using System.Web.Http;
+﻿using System.Data.Entity;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MCX.Models.DbEntities;
 
 namespace MCX
 {
@@ -16,7 +18,7 @@ namespace MCX
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            //Database.SetInitializer<DbContext>(new DefaultValuesInitializer());
+            Database.SetInitializer<DbContext>(new DefaultValuesInitializer());
 
         }
 

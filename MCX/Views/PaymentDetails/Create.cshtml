@@ -8,7 +8,7 @@
 <p></p>
 @if (ViewBag != null)
 {
-    if (Model.CustomerID > 0)
+    if (Model.CustomerId > 0)
     {
     }
     else
@@ -85,7 +85,7 @@
             <div class="col-lg-6 has-error">
                 @{
     DbEntities context = new DbEntities();
-    var ServiceList = context.PaymentDetails.OrderBy(x => x.ModifiedDate).Where(x => x.CustomerID == Model.CustomerID).ToList(); // && x.Amount == 0
+    var ServiceList = context.PaymentDetails.OrderBy(x => x.ModifiedDate).Where(x => x.CustomerId == Model.CustomerId).ToList(); // && x.Amount == 0
 
     <div class="form-group">
         <div class="row">
@@ -113,7 +113,7 @@
                     <div class="col-lg-6 col-md-12">
 
 
-                        @if (a.isLastService == true)
+                        @if (a.IsLastService == true)
                         {
                             DecideClass = "background: #fccdcd !important";
                         }
@@ -136,7 +136,7 @@
                                 </li>
                                 <li>
                                     <span class="left">Last Service</span>
-                                    <span class="right">@a.isLastService</span>
+                                    <span class="right">@a.IsLastService</span>
                                 </li>
                                 <li>
                                     <span class="left">Service Type</span>

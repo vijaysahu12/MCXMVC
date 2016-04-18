@@ -58,7 +58,7 @@ namespace MCX.Controllers
             var pdObject = new Models.CustomModel.PaymentDetailsModel();
             pdObject.customers = await db.Customers.FindAsync(id);
 
-            pdObject.paymentDetails = await db.PaymentDetails.Where(x => x.CustomerID == id).ToListAsync();
+            pdObject.paymentDetails = await db.PaymentDetails.Where(x => x.CustomerId == id).ToListAsync();
 
             if (pdObject.customers == null)
             {

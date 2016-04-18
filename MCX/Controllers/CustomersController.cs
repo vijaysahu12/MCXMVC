@@ -407,9 +407,9 @@ namespace MCX.Controllers
                             Amount = 0,
                             CreatedBy = loggedInUser == null ? 1 : loggedInUser.LoginId,
                             CreatedDate = DateTime.Now,
-                            CustomerID = customers.CustomerID,
+                            CustomerId = customers.CustomerID,
                             Description = "Giving Free Trial Services",
-                            isLastService = true,
+                            IsLastService = true,
                             ServiceStartDate = DateTime.Now,
                             ServiceEndDate = Convert.ToDateTime(customers.DueDate),
                             ServiceType = 2 // 2 stand for free trials
@@ -467,7 +467,7 @@ namespace MCX.Controllers
 
             customers.Description = sb.ToString();
 
-            await _db.PaymentDetails.Where(x => x.CustomerID == id && x.isLastService == true && x.Active == true).OrderBy(x => x.CreatedDate).ToListAsync();
+            await _db.PaymentDetails.Where(x => x.CustomerId == id && x.IsLastService == true && x.Active == true).OrderBy(x => x.CreatedDate).ToListAsync();
 
             ViewBag.LeadSourceId = new SelectList(_db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
             ViewBag.LeadStatusId = new SelectList(_db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
@@ -627,10 +627,10 @@ namespace MCX.Controllers
                         }
 
 
-                        PaymentDetail payment = _db.PaymentDetails.SingleOrDefault(x => x.CustomerID == kid);
+                        PaymentDetail payment = _db.PaymentDetails.SingleOrDefault(x => x.CustomerId == kid);
                         if (payment == null) continue;
                         payment.Active = false;
-                        payment.isLastService = false;
+                        payment.IsLastService = false;
                         payment.DeletedBy = loggedInUser.LoginId;
                         _db.Entry(payment).State = EntityState.Modified;
                         await _db.SaveChangesAsync();
@@ -684,7 +684,7 @@ namespace MCX.Controllers
             int id;
             try
             {
-                Customers objCustomer = null;
+
                 for (int i = 0; i < (a.Length - 1); i++)
                 {
                     try
@@ -692,7 +692,7 @@ namespace MCX.Controllers
                         id = Convert.ToInt32(a[i]);
                         if (id > 0)
                         {
-                            objCustomer = new Customers();
+                            var objCustomer = new Customers();
                             objCustomer = _db.Customers.Find(id);
                             objCustomer.LeadOwner = Convert.ToInt32(LoginId);
                             objCustomer.DueDate = DateTime.Now.ToShortDateString();
@@ -727,60 +727,70 @@ namespace MCX.Controllers
 
         public async Task<ActionResult> IndexPartial(string sortOrder, string currentFilter, string searchString, int? page, string CustomerType = "L", int DetailForUserID = 0)
         {
-            var ab1 = new string[2];
-            var customers = _db.Customers
-                .Where(x => x.IsDeleted == false && x.IsActive == true)
-
-                .Include(c => c.LeadSource)
-                .Include(c => c.LeadStatu)
-                .Include(c => c.Product)
-                .Include(c => c.Stage).Include(c => c.LeadOwner);
-
-            if (CustomerType == "0")
+            try
             {
 
-            }
-            else
-            {
-                customers = customers.Where(x => x.CustomerType == CustomerType);
 
-            }
+                var ab1 = new string[2];
+                var customers = _db.Customers
+                    .Where(x => x.IsDeleted == false && x.IsActive == true)
 
-            if (DetailForUserID == 0)
-            {
+                    .Include(c => c.LeadSource)
+                    .Include(c => c.LeadStatu)
+                    .Include(c => c.Product)
+                    .Include(c => c.Stage)
+                    .Include(c => c.OwnerLead);
 
-            }
-            else if (DetailForUserID > 0)
-            {
-                customers = _db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
-            }
-            else if (DetailForUserID == -1)
-            {
-                var objUsers = (Users)Session["LoggedInUser"];
-                customers = _db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
-            }
+                if (CustomerType == "0")
+                {
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString) || s.Email.Contains(searchString) || s.Mobile.Contains(searchString));
-            }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    customers = customers.OrderByDescending(s => s.FirstName);
-                    break;
-                case "Date":
-                    customers = customers.OrderBy(s => s.CreatedDate);
-                    break;
-                case "date_desc":
-                    customers = customers.OrderByDescending(s => s.CreatedDate);
-                    break;
-                default:  // Name ascending 
-                    customers = customers.OrderBy(s => s.LastName);
-                    break;
-            }
+                }
+                else
+                {
+                    customers = customers.Where(x => x.CustomerType == CustomerType);
 
-            return PartialView("~/Views/Customers/_IndexPartial.cshtml", await customers.ToListAsync());
+                }
+
+                if (DetailForUserID == 0)
+                {
+
+                }
+                else if (DetailForUserID > 0)
+                {
+                    customers = _db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
+                }
+                else if (DetailForUserID == -1)
+                {
+                    var objUsers = (Users)Session["LoggedInUser"];
+                    customers = _db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
+                }
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString) || s.Email.Contains(searchString) || s.Mobile.Contains(searchString));
+                }
+                switch (sortOrder)
+                {
+                    case "name_desc":
+                        customers = customers.OrderByDescending(s => s.FirstName);
+                        break;
+                    case "Date":
+                        customers = customers.OrderBy(s => s.CreatedDate);
+                        break;
+                    case "date_desc":
+                        customers = customers.OrderByDescending(s => s.CreatedDate);
+                        break;
+                    default:  // Name ascending 
+                        customers = customers.OrderBy(s => s.LastName);
+                        break;
+                }
+
+                return PartialView("~/Views/Customers/_IndexPartial.cshtml", await customers.ToListAsync());
+            }
+            catch
+            {
+                throw new Exception("Exception throws while binding Customers");
+            }
         }
         protected override void OnException(ExceptionContext filterContext)
         {

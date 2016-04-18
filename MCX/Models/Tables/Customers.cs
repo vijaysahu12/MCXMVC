@@ -8,8 +8,11 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 
 namespace MCX.Models.Tables
 {
@@ -25,8 +28,8 @@ namespace MCX.Models.Tables
 
         [Key]
         public long CustomerID { get; set; }
-
-        public Nullable<long> LeadOwner { get; set; }
+        
+        public long LeadOwner { get; set; }
 
         [Required]
         [Display(Name = "First Name")]
@@ -98,8 +101,10 @@ namespace MCX.Models.Tables
 
         public string City { get; set; }
 
+        [Required]
         public string CustomerType { get; set; }
 
+        [Required]
         public long CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
 
@@ -109,10 +114,10 @@ namespace MCX.Models.Tables
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<long> Investmentid { get; set; }
 
-        
+
 
         [ForeignKey("LeadOwner")]
-        public Users OwnerLead { get; set; }
+        public virtual Users OwnerLead { get; set; }
 
         [Display(Name = "Lead Source")]
         public virtual LeadSources LeadSource { get; set; }
@@ -126,8 +131,8 @@ namespace MCX.Models.Tables
         public Nullable<int> StageId { get; set; }
         public virtual Stage Stage { get; set; }
 
-        [ForeignKey("LeadOwner")]
-        public Users OwnerLead { get; set; }
+        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
+
 
 
     }

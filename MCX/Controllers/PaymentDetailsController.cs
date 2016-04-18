@@ -42,7 +42,7 @@ namespace MCX.Controllers
 
             ViewBag.CustomerID = CustomerID;
 
-            var obj = new PaymentDetail { CustomerID = Convert.ToInt32(CustomerID) };
+            var obj = new PaymentDetail { CustomerId = Convert.ToInt32(CustomerID) };
 
             return View(obj);
         }
@@ -54,7 +54,7 @@ namespace MCX.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "PaymentID,CustomerID,Amount,Description,Active,ServiceStartDate,ServiceEndDate,isLastService,isNotified,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate,DeletedBy,DeletedDate")] PaymentDetail paymentDetail)
         {
-            switch (paymentDetail.CustomerID)
+            switch (paymentDetail.CustomerId)
             {
                 case 0:
                     ViewBag.msg = "For whom you want to start this service!";
@@ -67,8 +67,8 @@ namespace MCX.Controllers
                         {
                             paymentDetail.CreatedDate = DateTime.Now;
                             paymentDetail.Active = true;
-                            paymentDetail.isLastService = true;
-                            paymentDetail.isNotified = false;
+                            paymentDetail.IsLastService = true;
+                            paymentDetail.IsNotified = false;
                             paymentDetail.CreatedBy = objLoggIn.LoginId;
 
                             if (ModelState.IsValid)

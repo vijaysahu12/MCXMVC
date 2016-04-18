@@ -134,9 +134,13 @@
     <Compile Include="HelperClass\Interface\IExcelHelper.cs" />
     <Compile Include="HelperClass\Interface\IValidateEngine.cs" />
     <Compile Include="HelperClass\InterOpExcelRead.cs" />
-    <Compile Include="Migrations\201604180808075_LeadOwnerFK.cs" />
-    <Compile Include="Migrations\201604180808075_LeadOwnerFK.Designer.cs">
-      <DependentUpon>201604180808075_LeadOwnerFK.cs</DependentUpon>
+    <Compile Include="Migrations\201604181750544_NewDBfdgfsdg.cs" />
+    <Compile Include="Migrations\201604181750544_NewDBfdgfsdg.Designer.cs">
+      <DependentUpon>201604181750544_NewDBfdgfsdg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604181801369_NewDBfdgfsdgjiuhiuy.cs" />
+    <Compile Include="Migrations\201604181801369_NewDBfdgfsdgjiuhiuy.Designer.cs">
+      <DependentUpon>201604181801369_NewDBfdgfsdgjiuhiuy.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs">
       <SubType>Code</SubType>
@@ -295,8 +299,11 @@
     <Folder Include="saveFile\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201604180808075_LeadOwnerFK.resx">
-      <DependentUpon>201604180808075_LeadOwnerFK.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201604181750544_NewDBfdgfsdg.resx">
+      <DependentUpon>201604181750544_NewDBfdgfsdg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604181801369_NewDBfdgfsdgjiuhiuy.resx">
+      <DependentUpon>201604181801369_NewDBfdgfsdgjiuhiuy.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -14,13 +14,13 @@
         <h4>PaymentDetail</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.PaymentID)
+        @Html.HiddenFor(model => model.PaymentId)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.CustomerID, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.CustomerID, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.CustomerID, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -65,21 +65,21 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.isLastService, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IsLastService, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
-                    @Html.EditorFor(model => model.isLastService)
-                    @Html.ValidationMessageFor(model => model.isLastService, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.IsLastService)
+                    @Html.ValidationMessageFor(model => model.IsLastService, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.isNotified, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IsNotified, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
-                    @Html.EditorFor(model => model.isNotified)
-                    @Html.ValidationMessageFor(model => model.isNotified, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.IsNotified)
+                    @Html.ValidationMessageFor(model => model.IsNotified, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
