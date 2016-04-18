@@ -26,6 +26,8 @@ namespace MCX.Models.Tables
         [Key]
         public long CustomerID { get; set; }
 
+        public Nullable<long> LeadOwner { get; set; }
+
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -38,9 +40,6 @@ namespace MCX.Models.Tables
         [NotMapped]
         [Display(Name = "Due Date")]
         public string DueDate { get; set; }
-
-
-        public long LeadOwner { get; set; }
 
         [NotMapped]
         public string LeadOwnerName { get; set; }
@@ -64,10 +63,10 @@ namespace MCX.Models.Tables
         [Display(Name = "Product ")]
         public Nullable<int> ProductId { get; set; }
 
-         
+
         public Nullable<int> LeadStatusId { get; set; }
         public Nullable<int> LeadSourceId { get; set; }
-        public Nullable<int> StageId { get; set; }
+
 
         public bool IsActive { get; set; }
 
@@ -81,7 +80,7 @@ namespace MCX.Models.Tables
         public bool FollowUp { get; set; }
         public string Address { get; set; }
 
-       
+
         [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
@@ -96,33 +95,35 @@ namespace MCX.Models.Tables
         [Display(Name = "Phone")]
         [MaxLength(20)]
         public string Phone { get; set; }
-       
+
         public string City { get; set; }
-        
+
         public string CustomerType { get; set; }
-        
+
         public long CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        
+
         public bool IsDeleted { get; set; }
         public Nullable<long> Deletedby { get; set; }
         public Nullable<long> ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<long> Investmentid { get; set; }
 
-        [Display(Name = "Lead Source")]
-        public virtual LeadSources LeadSource { get; set; }
-
-
-        [Display(Name = "Lead Status")]
-        public virtual LeadStatu LeadStatu { get; set; }
+        
 
         [ForeignKey("LeadOwner")]
         public Users OwnerLead { get; set; }
 
+        [Display(Name = "Lead Source")]
+        public virtual LeadSources LeadSource { get; set; }
+
+        [Display(Name = "Lead Status")]
+        public virtual LeadStatu LeadStatu { get; set; }
+
         [Display(Name = "Product")]
         public virtual Product Product { get; set; }
 
+        public Nullable<int> StageId { get; set; }
         public virtual Stage Stage { get; set; }
 
 

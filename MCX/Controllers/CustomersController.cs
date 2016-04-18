@@ -327,7 +327,7 @@ namespace MCX.Controllers
             }
             //Customers customers = await _db.Customers.FindAsync(id);
             Customers customers = await _db.Customers.Include(c => c.OwnerLead).Where(c => c.CustomerID == id).FirstOrDefaultAsync();
-      
+
             if (customers == null)
             {
                 return HttpNotFound();
@@ -681,16 +681,12 @@ namespace MCX.Controllers
         {
 
             string[] a = Ids.Split(',').ToArray();
-
             int id;
-
-
             try
             {
                 Customers objCustomer = null;
                 for (int i = 0; i < (a.Length - 1); i++)
                 {
-
                     try
                     {
                         id = Convert.ToInt32(a[i]);
@@ -698,19 +694,17 @@ namespace MCX.Controllers
                         {
                             objCustomer = new Customers();
                             objCustomer = _db.Customers.Find(id);
-
                             objCustomer.LeadOwner = Convert.ToInt32(LoginId);
                             objCustomer.DueDate = DateTime.Now.ToShortDateString();
                             _db.Entry(objCustomer).State = EntityState.Modified;
                         }
                         await _db.SaveChangesAsync();
                     }
-                    catch (Exception)
+                    catch
                     {
 
                     }
                 }
-
             }
             catch (System.Data.Entity.Validation.DbEntityValidationException e)
             {
