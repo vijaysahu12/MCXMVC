@@ -9,7 +9,7 @@ namespace MCX.Models.DbEntities
         public DbEntities()
             : base("name=MCX")
         {
-
+            Database.SetInitializer<DbEntities>(null);
         }
         public DbSet<Users> Users { get; set; }
 
