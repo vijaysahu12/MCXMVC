@@ -5,10 +5,10 @@ using System.Web;
 
 namespace MCX.Models.CustomModel
 {
-    public class PaymentDetailsModel
+    public class ServiceDetailsModel
     {
-        public MCX.Models.Tables.Customers customers { get; set; }
-        public List<MCX.Models.Tables.PaymentDetail> paymentDetails { get; set; }
+        public MCX.Models.Tables.Customers Customers { get; set; }
+        public List<MCX.Models.Tables.ServiceDetail> ServiceDetails { get; set; }
 
     }
 }

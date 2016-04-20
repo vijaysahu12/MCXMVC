@@ -8,7 +8,7 @@ using System.Web;
 
 namespace MCX.Models.Tables
 {
-    public class PaymentDetail
+    public class ServiceDetail
     {
         [Key]
         public long PaymentId { get; set; }

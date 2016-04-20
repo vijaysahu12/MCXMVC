@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
 
-    alert('1');
-    debugger;
+    //alert('1');
+    //debugger;
 
     if ($("div").find('input:text').hasClass('DatePicker')) {
         $('.DatePicker').datetimepicker({
@@ -9,5 +9,5 @@
             format: 'm/d/Y'
         });
     }
-    debugger;
+    //debugger;
 });

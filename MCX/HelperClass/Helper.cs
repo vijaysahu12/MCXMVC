@@ -106,7 +106,7 @@ namespace MCX.HelperClass
                 var dt = new DataTable();
                 var rowIndex = 1;
                 var ab = "";
-                while (((Microsoft.Office.Interop.Excel.Range)xlWorksheet.Cells[rowCount, temp]).Value2 != null)
+                while (((Microsoft.Office.Interop.Excel.Range)xlWorksheet.Cells[1, temp]).Value2 != null)
                 {
                     ab = Convert.ToString(((Microsoft.Office.Interop.Excel.Range)xlWorksheet.Cells[rowIndex, temp]).Value2);
                     dt.Columns.Add(ab.Trim());

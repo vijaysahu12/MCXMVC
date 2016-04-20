@@ -1,15 +1,19 @@
-﻿@model MCX.Models.Tables.PaymentDetail
+﻿@model MCX.Models.Tables.ServiceDetail
 @using MCX.Models.DbEntities;
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Start New Service";
 }
 
-<h2>Service Details</h2>
+<h2>@ViewBag.Title</h2>
 <p></p>
 @if (ViewBag != null)
 {
-    if (Model.CustomerId > 0)
+    if (Model != null && Model.CustomerId > 0)
     {
+        if (TempData["Message"] != null)
+        {
+            <div class="container alert-warning"> <h3> @TempData["Message"] </h3>. </div>
+        }
     }
     else
     {
@@ -77,7 +81,10 @@
                         @*<div class="col-md-offset-2 col-md-10">
                                 <input type="button" value=""
 
-                            </div>*@
+                            </div>*@<div class="col-md-offset-2 col-md-10">
+                            <input type="button" value="">
+
+                        </div>
                     </div>
                 </div>
 
@@ -85,7 +92,7 @@
             <div class="col-lg-6 has-error">
                 @{
     DbEntities context = new DbEntities();
-    var ServiceList = context.PaymentDetails.OrderBy(x => x.ModifiedDate).Where(x => x.CustomerId == Model.CustomerId).ToList(); // && x.Amount == 0
+    var ServiceList = context.ServiceDetails.OrderBy(x => x.ModifiedDate).Where(x => x.CustomerId == Model.CustomerId).ToList(); // && x.Amount == 0
 
     <div class="form-group">
         <div class="row">
@@ -174,20 +181,18 @@
 <script>
 
     $(document).ready(function () {
-
-       
-
         $("#ServiceEndDate,#ServiceStartDate").val('');
 
         $("#ServiceEndDate,#ServiceStartDate").addClass("DatePicker");
-         
-            $("#ServiceEndDate,#ServiceStartDate").datetimepicker({
-                timepicker: false,
-                format: 'm/d/Y'
-            });
-       
-       
+
+        $("#ServiceEndDate,#ServiceStartDate").datetimepicker({
+            timepicker: false,
+            format: 'm/d/Y'
+        });
+
+
     });
 
 </script>
 @*<script src="~/Scripts/CustomJS/Common.js"></script>*@
+<script src="~/Scripts/CustomJS/Common.js"></script>

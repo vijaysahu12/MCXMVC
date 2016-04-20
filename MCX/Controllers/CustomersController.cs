@@ -94,57 +94,84 @@ namespace MCX.Controllers
                                                 //    db.SaveChanges();
                                                 //});
 
-                                                foreach (var a in list)
+                                                foreach (var customers in list)
                                                 {
-                                                    a.CreatedBy = loggedInUser.LoginId;
-                                                    a.CreatedDate = DateTime.Now;
+                                                    customers.CreatedBy = loggedInUser.LoginId;
+                                                    customers.CreatedDate = DateTime.Now;
 
 
-                                                    if (a.FirstName == null)
+                                                    if (customers.FirstName == null)
                                                     {
-                                                        a.FirstName = "";
+                                                        continue;
+                                                        //a.FirstName = "";if FirstName  is null then no need to insert the record into DB.
                                                     }
-                                                    if (string.IsNullOrWhiteSpace(a.LastName))
+                                                    if (string.IsNullOrWhiteSpace(customers.LastName))
                                                     {
-                                                        a.LastName = "";
-                                                    }
-                                                    a.DueDate = DateTime.Now.ToShortDateString();
-
-                                                    if (a.CustomerType == null)
-                                                    {
-                                                        a.CustomerType = "L";
+                                                        customers.LastName = "";
                                                     }
 
 
-                                                    if (string.IsNullOrWhiteSpace(a.Email))
+                                                    if (customers.CustomerType == null)
                                                     {
-                                                        a.Email = "..";
+                                                        customers.CustomerType = "L";
                                                     }
 
 
-                                                    if (string.IsNullOrWhiteSpace(a.Mobile))
+                                                    if (string.IsNullOrWhiteSpace(customers.Email))
                                                     {
-                                                        a.Email = "91 ";
+                                                        customers.Email = "..";
+                                                    }
+
+
+                                                    if (string.IsNullOrWhiteSpace(customers.Mobile))
+                                                    {
+                                                        continue;// a.Email = "91 "; if mobile is null then no need to insert the record into DB.
+
                                                     }
 
 
 
-                                                    a.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
-                                                    a.FollowUp = false;
+                                                    customers.DueDate = DateTime.Now.AddDays(2).ToShortDateString();
+                                                    customers.FollowUp = false;
 
-                                                    if (a.Investmentid == null)
+                                                    if (customers.Investmentid == null)
                                                     {
-                                                        a.Investmentid = 0;
+                                                        customers.Investmentid = 0;
                                                     }
+                                                    customers.DueDate = DateTime.Now.ToShortDateString();
 
-                                                    a.IsActive = true;
-                                                    a.LeadOwner = loggedInUser.LoginId;
-                                                    a.LeadSourceId = 2;
-                                                    a.LeadStatusId = 4;
-                                                    a.ProductId = 1;
-                                                    a.StageId = 1;
 
-                                                    _db.Customers.Add(a);
+                                                    customers.IsActive = true;
+                                                    customers.LeadOwner = loggedInUser.LoginId;
+                                                    customers.LeadSourceId = 2;
+                                                    customers.LeadStatusId = 4;
+                                                    customers.ProductId = 1;
+                                                    customers.StageId = 1;
+
+                                                    _db.Customers.Add(customers);
+                                                    if (customers.DueDate != null)
+                                                    {
+                                                        try
+                                                        {
+                                                            var dueDate = Convert.ToDateTime(customers.DueDate);
+                                                            _db.ServiceDetails.Add(
+                                                            new ServiceDetail
+                                                            {
+                                                                Active = true,
+                                                                Amount = 0,
+                                                                CreatedBy = loggedInUser == null ? 1 : loggedInUser.LoginId,
+                                                                CreatedDate = DateTime.Now,
+                                                                CustomerId = customers.CustomerID,
+                                                                Description = "Giving Free Trial Services",
+                                                                IsLastService = true,
+                                                                ServiceStartDate = DateTime.Now,
+                                                                ServiceEndDate = dueDate,
+                                                                ServiceType = 2 // 2 stand for free trials
+                                                            });
+                                                        }
+                                                        catch { }
+
+                                                    }
                                                     _db.SaveChanges();
                                                 }
 
@@ -174,7 +201,7 @@ namespace MCX.Controllers
 
             }
 
-            return RedirectToAction("IndexPartial");
+            return RedirectToAction("Index");
         }
 
         /*
@@ -400,8 +427,8 @@ namespace MCX.Controllers
                 if (!string.IsNullOrWhiteSpace(customers.DueDate))
                 {
                     var loggedInUser = (Users)Session["LoggedInUser"];
-                    _db.PaymentDetails.Add(
-                        new PaymentDetail
+                    _db.ServiceDetails.Add(
+                        new ServiceDetail
                         {
                             Active = true,
                             Amount = 0,
@@ -467,7 +494,7 @@ namespace MCX.Controllers
 
             customers.Description = sb.ToString();
 
-            await _db.PaymentDetails.Where(x => x.CustomerId == id && x.IsLastService == true && x.Active == true).OrderBy(x => x.CreatedDate).ToListAsync();
+            await _db.ServiceDetails.Where(x => x.CustomerId == id && x.IsLastService == true && x.Active == true).OrderBy(x => x.CreatedDate).ToListAsync();
 
             ViewBag.LeadSourceId = new SelectList(_db.LeadSources, "LeadSourceID", "SourceName", customers.LeadSourceId);
             ViewBag.LeadStatusId = new SelectList(_db.LeadStatus, "LeadStatusId", "LeadStatus", customers.LeadStatusId);
@@ -586,7 +613,7 @@ namespace MCX.Controllers
             //return RedirectToAction("Index", "Customers");
 
 
-            return RedirectToAction("Create", "PaymentDetails", new { CustomerID = customerId });
+            return RedirectToAction("Create", "ServiceDetails", new { CustomerID = customerId });
         }
 
         [NonAction]
@@ -627,7 +654,7 @@ namespace MCX.Controllers
                         }
 
 
-                        PaymentDetail payment = _db.PaymentDetails.SingleOrDefault(x => x.CustomerId == kid);
+                        ServiceDetail payment = _db.ServiceDetails.SingleOrDefault(x => x.CustomerId == kid);
                         if (payment == null) continue;
                         payment.Active = false;
                         payment.IsLastService = false;
@@ -750,38 +777,38 @@ namespace MCX.Controllers
                     customers = customers.Where(x => x.CustomerType == CustomerType);
 
                 }
-
                 if (DetailForUserID == 0)
                 {
 
                 }
                 else if (DetailForUserID > 0)
                 {
-                    customers = _db.Customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
+                    customers = customers.Where(x => x.LeadOwner == DetailForUserID && x.IsDeleted == false && x.IsActive);
                 }
                 else if (DetailForUserID == -1)
                 {
                     var objUsers = (Users)Session["LoggedInUser"];
-                    customers = _db.Customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
+                    customers = customers.Where(x => x.LeadOwner == objUsers.LoginId && x.IsDeleted == false && x.IsActive);
                 }
 
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     customers = customers.Where(s => s.LastName.Contains(searchString) || s.FirstName.Contains(searchString) || s.Email.Contains(searchString) || s.Mobile.Contains(searchString));
                 }
+                sortOrder = "date_desc";
                 switch (sortOrder)
                 {
                     case "name_desc":
                         customers = customers.OrderByDescending(s => s.FirstName);
                         break;
-                    case "Date":
-                        customers = customers.OrderBy(s => s.CreatedDate);
+                    case "LName_desc":
+                        customers = customers.OrderBy(s => s.LastName);
                         break;
                     case "date_desc":
                         customers = customers.OrderByDescending(s => s.CreatedDate);
                         break;
                     default:  // Name ascending 
-                        customers = customers.OrderBy(s => s.LastName);
+                        customers = customers.OrderBy(s => s.CreatedDate);
                         break;
                 }
 

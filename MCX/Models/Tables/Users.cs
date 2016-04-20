@@ -36,7 +36,7 @@ namespace MCX.Models.Tables
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Customers> Customers { get; set; }
 
-        public virtual ICollection<PaymentDetail> PaymentDetail { get; set; }
+        public virtual ICollection<ServiceDetail> ServiceDetail { get; set; }
 
         [Required]
         [Display(Name = "User Name")]

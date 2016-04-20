@@ -55,12 +55,12 @@ namespace MCX.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var pdObject = new Models.CustomModel.PaymentDetailsModel();
-            pdObject.customers = await db.Customers.FindAsync(id);
+            var pdObject = new Models.CustomModel.ServiceDetailsModel();
+            pdObject.Customers = await db.Customers.FindAsync(id);
 
-            pdObject.paymentDetails = await db.PaymentDetails.Where(x => x.CustomerId == id).ToListAsync();
+            pdObject.ServiceDetails = await db.ServiceDetails.Where(x => x.CustomerId == id).ToListAsync();
 
-            if (pdObject.customers == null)
+            if (pdObject.Customers == null)
             {
                 return HttpNotFound();
             }

@@ -3,7 +3,7 @@
 
 
     bindUserlistForFilter();
-    ReBindGrid();
+
 });
 $("#gridBody").find('tr').hover(function () {
     $(this).addClass('onFoucsIn');
@@ -177,8 +177,18 @@ $(document).on("click", "#btnproceed", function () {
     }
 });
 
-$(document).on('change', '#drpUserListFilter', function () { ReBindGrid(); });
+$(document).on('change', '#drpUserListFilter,#drpCustomerType', function () { ReBindGrid(); });
 
+$(document).on('change', "#anyFileType", function () {
+    if (confirm("Do you want to continue with this selected file for import process!!!")) {
+        $("#btnSubmitImportFile").trigger('click');
+    } else {
+
+        $("#anyFileType").val("");
+        //alert('You can try again!!!');
+    }
+
+});
 
 function ReBindGrid() {
     $("#loader").css('display', 'block');
@@ -189,8 +199,11 @@ function ReBindGrid() {
 }
 
 function ajaxCallGet(url, parameter) {
+
+    var DetailForUserId = parseInt($("#drpUserListFilter").val());
+
     $.ajax({
-        type: "GET", url: url, data: { DetailForUserID: parseInt($("#drpUserListFilter").val()), searchString: $("#searchFromGrid").val(), CustomerType: $("#txtCustomerType :selected").val() }, contentType: "application/Json", success: function (data) {
+        type: "GET", url: url, data: { DetailForUserID: DetailForUserId, searchString: $("#searchFromGrid").val(), CustomerType: $("#drpCustomerType :selected").val() }, contentType: "application/Json", success: function (data) {
             $('#gridBody').empty();
             $('#gridBody').append(data);
             console.log("Successfully bind fresh data to GRID");
@@ -215,6 +228,9 @@ function bindUserlistForFilter() {
             $("#drpUserListFilter").append(items);
             console.log("Successfully bind fresh data to GRID");
         },
-        complete: function () { $("#loader").css('display', 'none'); }
+        complete: function () {
+
+            ReBindGrid();
+        }
     });
 }

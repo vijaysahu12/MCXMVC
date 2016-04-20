@@ -1,4 +1,4 @@
-﻿@model MCX.Models.Tables.PaymentDetail
+﻿@model MCX.Models.Tables.ServiceDetail
 
 @{
     ViewBag.Title = "Edit";
@@ -11,7 +11,7 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>PaymentDetail</h4>
+        <h4>Service Detail</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.PaymentId)

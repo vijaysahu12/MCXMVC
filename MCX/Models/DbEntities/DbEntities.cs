@@ -24,7 +24,7 @@ namespace MCX.Models.DbEntities
         public DbSet<LeadSources> LeadSources { get; set; }
 
 
-        public DbSet<PaymentDetail> PaymentDetails { get; set; }
+        public DbSet<ServiceDetail> ServiceDetails { get; set; }
 
         public DbSet<Descriptions> Descriptions { get; set; }
 

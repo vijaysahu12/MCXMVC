@@ -19,6 +19,16 @@
     .onTableTrClicked {
         background-color: #0097B6;
     }
+
+    a {
+        color: #000000 !important;
+        text-decoration: none;
+    }
+
+        a:hover a:focus {
+            color: #B67A00 !important;
+            text-decoration: none;
+        }
 </style>
 
 <div class="row">
@@ -28,27 +38,16 @@
         <div class="pull-right">
             @using (Html.BeginForm("ImportLeadAndPotential", "Customers", FormMethod.Post, new { enctype = "multipart/form-data", id = "form" }))
             {
-                @*<form action="/Customer/ImportCreditCard?@random.ToString()" method="post" id="divformSubmit" enctype="multipart/form-data">*@
                 <div class="row">
-
-                    <div class="col-sm-12 col-md-offset-3">
-
-                        <div class="col-lg-6" id="divFileType" style="display:block;">
-                            <input type="file" style="margin-top: 7px;"  name="anyFileType" id="anyFileType" />
-                        </div>
-                        <div class="col-lg-2">
-                            <input type="submit" class="btn btn-success" value="Import Leads" />
-                        </div>
-                        @*<div id="DivResultResponse">
-
-                            </div>*@
-
+                    <div class="col-lg-6" id="divFileType" style="display:block;">
+                        <input type="file" style="margin-top: 7px;" class="btn btn-primary" name="anyFileType" id="anyFileType">
                     </div>
-
+                    <div class="col-lg-6">
+                        <input type="submit" id="btnSubmitImportFile" style="display: none" class="btn btn-success" value="Import Leads">
+                    </div>
                 </div>
             }
         </div>
-
     </div>
 </div>
 @*List :-@Model.Count();*@
@@ -73,7 +72,7 @@
                     }
                 </div>
                 <div class="col-lg-2">
-                    <select class="form-control form-inline" id="txtCustomerType">
+                    <select class="form-control form-inline" id="drpCustomerType">
                         <option value='0'>--All--</option>
                         <option value='L' selected="selected">Lead</option>
                         <option value='P'>Potential</option>

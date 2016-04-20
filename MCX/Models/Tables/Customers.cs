@@ -131,7 +131,7 @@ namespace MCX.Models.Tables
         public Nullable<int> StageId { get; set; }
         public virtual Stage Stage { get; set; }
 
-        public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
+        public virtual ICollection<ServiceDetail> ServiceDetail { get; set; }
 
 
 
